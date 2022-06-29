@@ -1,0 +1,24 @@
+h1, h2 {
+  font-family: Lato;
+}
+
+body {
+  background-color: burlywood;
+}
+
+.tamanio{
+  height: 36px;
+}
+
+.scrollable {
+  height: 35rem;
+  overflow: scroll;
+}
+
+
+/*
+#tablaSimulacion thead tr th{
+  top: 20px;
+  position: sticky;
+}
+*/
