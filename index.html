@@ -11,19 +11,33 @@
   <body>
     <h1 class="text-center">Trabajo Práctico N°7 de Simulación: Zapatería</h1>
 
+    <hr>
+
     <div class="container">
       <form>
         <h2>Parámetros:</h2>
 
-        <div class="form-group row">
-          <label class="col-sm-3 col-form-label text-sm-end" for="txtCantNros">Cantidad de eventos (N)</label>
-          <div class="col-sm-2">
-            <input type="number" class="form-control" id="txtCantNros" name="txtCantNros"/>
+        <div class="form-group row my-3">
+          <label class="col-sm-auto col-form-label" for="txtCantEventos">Cantidad de eventos</label>
+          <div class="col-sm-auto">
+            <input type="number" class="form-control" id="txtCantEventos" name="txtCantEventos"/>
           </div>
           
-          <label class="col-sm-2 col-form-label text-sm-end" for="txtEventoDesde">Evento desde</label>
-          <div class="col-sm-2">
+          <label class="col-sm-auto col-form-label" for="txtEventoDesde">Evento desde</label>
+          <div class="col-sm-auto">
             <input type="number" class="form-control" id="txtEventoDesde" name="txtEventoDesde"/>
+          </div>
+        </div>
+
+        <div class="form-group row my-3">
+          <label class="col-sm-auto col-form-label" for="txtProbRetiro">Probabilidad de que se retiren zapatos</label>
+          <div class="col-sm-auto">
+            <input type="number" class="form-control" id="txtProbRetiro" name="txtProbRetiro" value="0.5"/>
+          </div>
+          
+          <label class="col-sm-auto col-form-label" for="txtProbPedido">Probabilidad de que se haga un pedido</label>
+          <div class="col-sm-auto">
+            <input type="number" class="form-control" id="txtProbPedido" name="txtProbPedido" value="0.5"/>
           </div>
         </div>
 
@@ -32,11 +46,10 @@
         <h4>Eventos:</h4>
         <ul>
           <li class="my-3">
-  
             <div class="form-group row">
-              <div class="col-auto"><b>Llegada de cliente (Distribución Exponencial Negativa):</b></div>
-              <label class="col-sm-auto col-form-label text-sm-end" for="txtMediaLlegadaClientes"> Media (µ)</label>
-              <div class="col-sm-2">
+              <div class="col-sm-auto col-form-label"><b>Llegada de cliente (Distribución Exponencial Negativa):</b></div>
+              <label class="col-sm-auto col-form-label" for="txtMediaLlegadaClientes"> Media (µ)</label>
+              <div class="col-sm-auto">
                 <input
                 type="number"
                 class="form-control"
@@ -49,10 +62,10 @@
           </li>
 
           <li class="my-3">
-            Fin atención de cliente: Distribución Uniforme
             <div class="form-group row">
-              <label class="col-sm-1 col-form-label text-sm-end" for="txtFinAtencionClienteA"> A</label>
-              <div class="col-sm-2">
+              <div class="col-sm-auto col-form-label"><b>Fin atención de cliente (Distribución Uniforme):</b></div>
+              <label class="col-sm-auto col-form-label" for="txtFinAtencionClienteA"> A</label>
+              <div class="col-sm-auto">
                 <input
                 type="number"
                 class="form-control"
@@ -62,8 +75,8 @@
                 />
               </div>
 
-              <label class="col-sm-1 col-form-label text-sm-end" for="txtFinAtencionClienteB"> B</label>
-              <div class="col-sm-2">
+              <label class="col-sm-auto col-form-label" for="txtFinAtencionClienteB"> B</label>
+              <div class="col-sm-auto">
                 <input
                 type="number"
                 class="form-control"
@@ -76,91 +89,49 @@
           </li>
 
           <li class="my-3">
-            Fin reparación de zapatos: Distribución Uniforme
             <div class="form-group row">
-              <label class="col-sm-1 col-form-label text-sm-end" for="txtFinReparacionZapatosA"> A</label>
-              <div class="col-sm-2">
+              <div class="col-sm-auto col-form-label"><b>Fin reparación de zapatos (Distribución Uniforme):</b></div>
+              <label class="col-sm-auto col-form-label" for="txtFinReparacionZapatosA"> A</label>
+              <div class="col-sm-auto">
                 <input
                 type="number"
                 class="form-control"
                 id="txtFinReparacionZapatosA"
                 name="txtFinReparacionZapatosA"
-                value="2"
+                value="7"
                 />
               </div>
 
-              <label class="col-sm-1 col-form-label text-sm-end" for="txtFinReparacionZapatosB"> B</label>
-              <div class="col-sm-2">
+              <label class="col-sm-auto col-form-label" for="txtFinReparacionZapatosB"> B</label>
+              <div class="col-sm-auto">
                 <input
                 type="number"
                 class="form-control"
                 id="txtFinReparacionZapatosB"
                 name="txtFinReparacionZapatosB"
-                value="4"
+                value="23"
                 />
               </div>
             </div>
           </li>
 
         </ul>
-        
-        </div>
 
-        <div class="row mb-3 mx-3">
-          <button class="btn btn-dark mb-2 mx-2 form-control form-control-sm"
+        <br>
+        
+        <button class="btn btn-dark mb-2 mx-2 form-control form-control-sm"
             id="btnSimular"
             type="button"
             name="btnSimular">
-            <span class="spinner-border spinner-border-sm" role="status" id="spinner" hidden></span>
             Simular
-          </button>
-        </div>
-
+        </button>
     </div>
 
-    
-
-    
-
     <div id="divTablaSimulacion">
-      <div class="container">
-        <h2>Tabla de probabilidad del tipo de pasajero</h2>
-        <table class="table table-hover table-responsive table-bordered mx-3 mb-3">
-          <tr>
-            <th>Tipo De Pasajero</th>
-            <th>P()</th>
-            <th>P() AC</th>
-            <th>Desde</th>
-            <th>Hasta</th>
-          </tr>
-          <tr>
-            <td>A (Facturación de equipaje → Control de Metales → Embarque)</td>
-            <td>0,30</td>
-            <td>0,30</td>
-            <td>0,00</td>
-            <td>0,29</td>
-          </tr>
-          <tr>
-            <td>B (Venta de billete → Facturación de equipaje → Control de Metales → Embarque) </td>
-            <td>0,15</td>
-            <td>0,45</td>
-            <td>0,30</td>
-            <td>0,44</td>
-          </tr>
-          <tr>
-            <td>C (Chequeo de billete → Control de metales → Embarque)</td>
-            <td>0,55</td>
-            <td>1,00</td>
-            <td>0,45</td>
-            <td>0,99</td>
-          </tr>
-        </table>
-      </div>
-
-      <div class="table-responsive scrollable row mb-3 mx-3">
-        <table id="tablaSimulacion" class="table table-hover table-bordered mx-3 mb-3">
+      <div class="table-responsive scrollable row my-3 mx-3">
+        <table id="tablaSimulacion" class="table table-hover table-bordered mx-3 my-3">
           <thead>
-            <tr id="asd">
+            <tr>
               <th rowspan="2">N° Evento</th>
               <th rowspan="2">Evento</th>
               <th rowspan="2">Reloj (min.)</th>
@@ -294,159 +265,7 @@
       </div>
     </div>
 
-    <div id="divTablaSimulacionAlternativa">
-      <div class="container">
-        <h2>Tabla de probabilidad del tipo de pasajero</h2>
-        <table class="table table-hover table-bordered table-responsive mx-3 mb-3">
-          <tr>
-            <th>Tipo De Pasajero</th>
-            <th>P()</th>
-            <th>P() AC</th>
-            <th>Desde</th>
-            <th>Hasta</th>
-          </tr>
-          <tr>
-            <td>AB (Venta de billete y facturación de equipaje → Control de Metales → Embarque)</td>
-            <td>0,45</td>
-            <td>0,45</td>
-            <td>0,00</td>
-            <td>0,44</td>
-          </tr>
-          <tr>
-            <td>C (Chequeo de billete → Control de metales → Embarque)</td>
-            <td>0,55</td>
-            <td>1,00</td>
-            <td>0,45</td>
-            <td>0,99</td>
-          </tr>
-        </table>
-      </div>
-      
-      <div class="table-responsive scrollable row mb-3 mx-3">
-        <table id="tablaSimulacionAlternativa" class="table table-hover table-bordered mx-3 mb-3">
-          <thead>
-            <tr>
-              <th rowspan="2">N° Evento</th>
-              <th rowspan="2">Evento</th>
-              <th rowspan="2">Reloj (min.)</th>
-              <th colspan="5">Llegada Bloqueo</th>
-              <th colspan="5">Llegada pasajero</th>
-              <th colspan="2">Bloqueo llegada</th>
-              <th colspan="4">Facturación y venta equipaje</th>
-              <th colspan="4">Chequeo billete</th>
-              <th colspan="2">Bloqueo Chequeo</th>
-              <th colspan="3">Control Metales</th>
-              <th colspan="3">Pase entre Facturación-Venta y Control</th>
-              <th colspan="3">Pase entre Chequeo y Control</th>
-              <th colspan="3">Pase entre Control y Embarque</th>
-              <th rowspan="2">Cola De Pasajeros Bloqueados en la Entrada</th>
-              <th colspan="3">Empleados Facturación y Venta</th>
-              <th colspan="2">Empleado Chequeo Billete</th>
-              <th colspan="2">Empleado Control Metales</th>
-              <th colspan="9">Métricas</th>
-            </tr>
-              
-            </tr>  
-
-              <!-- Tiempo entre Bloqueo -->
-              <th>RND valor beta</th>
-              <th>Tiempo Entre Bloqueos</th>
-              <th style="color: red">Próxima Bloqueo</th>
-              <th>RND</th>
-              <th>Objetivo Bloqueo</th>
-
-              <!-- Tiempo entre llegadas -->
-              <th>RND Tiempo Entre Llegadas</th>
-              <th>Tiempo Entre Llegadas</th>
-              <th style="color: red">Próxima Llegada</th>
-              <th>RND Tipo Pasajero</th>
-              <th>Tipo Pasajero</th>
-
-              <!-- Bloqueo llegada -->
-              <th>Tiempo De Bloqueo llegada</th>
-              <th style="color: red">Fin Bloqueo</th>
-
-              <!-- Tiempo facturación y venta pasajero -->
-              <th>RND Tiempo Facturación y venta</th>
-              <th>Tiempo Facturación y venta</th>
-              <th style="color: red">Fin Facturación y venta 1</th>
-              <th style="color: red">Fin Facturación y venta 2</th>
-
-              <!-- Tiempo chequeo billete -->
-              <th>RND 1 Chequeo Billete</th>
-              <th>RND 2 Chequeo Billete</th>
-              <th>Tiempo Chequeo Billete</th>
-              <th style="color: red">Fin Chequeo Billete</th>
-
-              <!-- Bloqueo Chequeo -->
-              <th>Tiempo De Bloqueo Chequeo</th>
-              <th style="color: red">Fin de Bloqueo Chequeo</th>
-
-              <!-- Tiempo control metales -->
-              <th>RND Control Metales</th>
-              <th>Tiempo Control Metales</th>
-              <th style="color: red">Fin Control Metales</th>
-
-              <!-- Pase entre facturacion-Venta y control -->
-              <th>RND Pase entre Facturación-Venta y Control</th>
-              <th>Tiempo Pase entre Facturación-Venta y Control</th>
-              <th>Fin Pase entre Facturación-Venta y Control</th>
-
-              <!-- Pase entre chequeo y control -->
-              <th>RND Pase Entre Chequeo y Control</th>
-              <th>Tiempo Pase Entre Chequeo y Control</th>
-              <th>Fin Pase Entre Chequeo y Control</th>
-
-              <!-- Pase entre control y embarque -->
-              <th>RND Pase Entre Control y Embarque</th>
-              <th>Tiempo Pase Entre Control y Embarque</th>
-              <th>Fin Pase Entre Control y Embarque</th>
-
-              <!-- Empleado Facturación y Venta 1 -->
-              <th>Estado Empleado1</th>
-              <th>Estado Empleado2</th>
-              <th>Cola Facturacion y Venta</th>
-
-              <!-- Empleado Chequeo Billete -->
-              <th>Estado Empleado</th>
-              <th>Cola Chequeo</th>
-              <th>Tiempo remanente chequeo</th>
-
-              <!-- Empleado Control Metales -->
-              <th>Estado Empleado</th>
-              <th>Cola Control</th>
-
-              <!-- Métricas -->
-              <th>Total Pasajeros A</th>
-              <th>Total Pasajeros B</th>
-              <th>Total Pasajeros C</th>
-              <th>Total Pasajeros</th>
-              <th>Acumulador Tiempo Pasajeros en Sistema</th>
-              <th>Acumulador Tiempo Ocioso del Agente de Control</th>
-              <th>Cantidad Pasajeros Atendidos por Empleados de Venta</th>
-              <th>Cantidad Máxima de Pasajeros en Alguna Cola</th>
-              <th>Cantidad Máxima Pasajeros en Cola de Control</th>
-            </tr>
-          </thead>
-
-          <tbody>
-          </tbody>
-
-        </table>
-      </div>
-
-      <div class="row mb-3 mx-3">
-        <button class="btn btn-dark mb-2 mx-2 form-control form-control-sm"
-          id="btnRKAlternativo"
-          type="button"
-          name="btnRKAlternativo">
-          Runge-Kutta
-        </button>
-      </div>
-    </div>
-
     <div class="container" id="divRungeKutta">
-      
     </div>
 
   </body>

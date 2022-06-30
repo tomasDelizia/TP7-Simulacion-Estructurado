@@ -5,41 +5,33 @@ import { SimuladorColasAlternativo } from './SimuladorColasAlternativo';
 import './style.css';
 
 // Definición de los cuadros de texto de la interfaz de usuario.
-const txtCantNros: HTMLInputElement = document.getElementById('txtCantNros') as HTMLInputElement;
+const txtCantEventos: HTMLInputElement = document.getElementById('txtCantEventos') as HTMLInputElement;
 const txtEventoDesde: HTMLInputElement = document.getElementById('txtEventoDesde') as HTMLInputElement;
-const txtMediaLlegadaPasajeros: HTMLInputElement = document.getElementById('txtMediaLlegadaPasajeros') as HTMLInputElement;
-const txtAFinDeFacturacion: HTMLInputElement = document.getElementById('txtAFinDeFacturacion') as HTMLInputElement;
-const txtBFinDeFacturacion: HTMLInputElement = document.getElementById('txtBFinDeFacturacion') as HTMLInputElement;
-const txtMediaFinVentaBillete: HTMLInputElement = document.getElementById('txtMediaFinVentaBillete') as HTMLInputElement;
-const txtMediaFinChequeoBillete: HTMLInputElement = document.getElementById('txtMediaFinChequeoBillete') as HTMLInputElement;
-const txtDesEstFinChequeoBillete: HTMLInputElement = document.getElementById('txtDesEstFinChequeoBillete') as HTMLInputElement;
-const txtMediaFinControlMetales: HTMLInputElement = document.getElementById('txtMediaFinControlMetales') as HTMLInputElement;
-const txtMediaFinPasoEntreZonas: HTMLInputElement = document.getElementById('txtMediaFinPasoEntreZonas') as HTMLInputElement;
+const txtProbRetiro: HTMLInputElement = document.getElementById('txtProbRetiro') as HTMLInputElement;
+const txtProbPedido: HTMLInputElement = document.getElementById('txtProbPedido') as HTMLInputElement;
 
-// Definición de los combo box de la interfaz de usuario.
-const cboJuntarVentanilla: HTMLSelectElement = document.getElementById('cboJuntarVentanilla') as HTMLSelectElement;
+const txtMediaLlegadaClientes: HTMLInputElement = document.getElementById('txtMediaLlegadaClientes') as HTMLInputElement;
 
-// Definición de la secciones de la simulación.
+const txtFinAtencionClienteA: HTMLInputElement = document.getElementById('txtFinAtencionClienteA') as HTMLInputElement;
+const txtFinAtencionClienteB: HTMLInputElement = document.getElementById('txtFinAtencionClienteB') as HTMLInputElement;
+
+const txtFinReparacionZapatosA: HTMLInputElement = document.getElementById('txtFinReparacionZapatosA') as HTMLInputElement;
+const txtFinReparacionZapatosB: HTMLInputElement = document.getElementById('txtFinReparacionZapatosB') as HTMLInputElement;
+
+// Definición de la secciones.
 const divTablaSimulacion: HTMLDivElement = document.getElementById('divTablaSimulacion') as HTMLDivElement;
-const divTablaSimulacionAlternativa: HTMLDivElement = document.getElementById('divTablaSimulacionAlternativa') as HTMLDivElement;
 const divRungeKutta: HTMLDivElement = document.getElementById('divRungeKutta') as HTMLDivElement;
 
 // Definición de la tablas de simulación de colas.
 const tablaSimulacion: HTMLTableElement = document.getElementById('tablaSimulacion') as HTMLTableElement;
 const cantEncabezadosTablaSimulacion = tablaSimulacion.rows[0].cells.length;
 const cantSubEncabezadosTablaSimulacion = tablaSimulacion.rows[1].cells.length;
-const tablaSimulacionAlternativa: HTMLTableElement = document.getElementById('tablaSimulacionAlternativa') as HTMLTableElement;
-const cantEncabezadosTablaSimulacionAlt = tablaSimulacionAlternativa.rows[0].cells.length;
-const cantSubEncabezadosTablaSimulacionAlt = tablaSimulacionAlternativa.rows[1].cells.length;
 const indicesEventosCandidatos: number[] = [5, 10, 14, 17, 20, 24, 26, 29];
-const indicesEventosCandidatosAlt: number[] = [5, 10, 14, 17, 18, 22, 24, 27];
 const colPasajeros: string[] = ['ID Pasajero', 'Tipo Pasajero', 'Estado', 'Minuto llegada', 'Minuto llegada de venta a facturación', 'Minuto llegada de facturación a control', 'Minuto llegada de chequeo a control', 'Minuto llegada de control a embarque'];
-const colPasajerosAlt: string[] = ['ID Pasajero', 'Tipo Pasajero', 'Estado', 'Minuto llegada', 'Minuto llegada de venta-facturación a control', 'Minuto llegada de chequeo a control', 'Minuto llegada de control a embarque'];
 
 // Definición de botones de la interfaz de usuario.
 const btnSimular: HTMLButtonElement = document.getElementById('btnSimular') as HTMLButtonElement;
 const btnRK: HTMLButtonElement = document.getElementById('btnRK') as HTMLButtonElement;
-const btnRKAlternativo: HTMLButtonElement = document.getElementById('btnRKAlternativo') as HTMLButtonElement;
 
 // Definición de los objetos que realizan la simulación de colas.
 let simulador: Simulador;
@@ -47,26 +39,24 @@ let matrizEstado: string[][];
 let cantMaxPasajeros: number;
 
 // Definición de los parámetros.
-let n: number;
+let cantEventos: number;
 let eventoDesde: number;
-let mediaLlegadaPasajero: number;
-let AFinFacturacion: number;
-let BFinFacturacion: number;
-let mediaVentaBillete: number;
-let mediaChequeoBilletes: number;
-let desEstChequeoBilletes: number;
-let mediaControlMetales: number;
-let mediaPasoEntreZonas: number;
+
+let mediaLlegadaClientes: number;
+
+let finAtencionClienteA: number;
+let finAtencionClienteB: number;
+
+let finReparacionZapatosA: number;
+let finReparacionZapatosB: number;
 
 //Ocultamos la seccion en donde esta la tabla.
 HTMLUtils.ocultarSeccion(divTablaSimulacion);
-HTMLUtils.ocultarSeccion(divTablaSimulacionAlternativa);
 HTMLUtils.ocultarSeccion(divRungeKutta);
 
 // Disparamos la simulación.
 btnSimular.addEventListener('click', () => {
   HTMLUtils.ocultarSeccion(divTablaSimulacion);
-  HTMLUtils.ocultarSeccion(divTablaSimulacionAlternativa);
   HTMLUtils.ocultarSeccion(divRungeKutta);
   simular();
 });
@@ -126,7 +116,7 @@ const simular = () => {
       // Realizamos la simulación alternativa.
       startTime = performance.now();
       simulador = new SimuladorColasAlternativo();
-      simulador.simular(n, eventoDesde, mediaLlegadaPasajero, AFinFacturacion, BFinFacturacion, mediaVentaBillete, mediaChequeoBilletes, desEstChequeoBilletes, mediaControlMetales, mediaPasoEntreZonas);
+      simulador.simular(cantEventos, eventoDesde, mediaLlegadaClientes, finAtencionClienteA, finAtencionClienteB, mediaVentaBillete, mediaChequeoBilletes, desEstChequeoBilletes, mediaControlMetales, mediaPasoEntreZonas);
       console.log(`La simulación tardó ${performance.now() - startTime} milisegundos`);
 
       matrizEstado = simulador.getMatrizEstado();
@@ -150,7 +140,7 @@ const simular = () => {
       // Realizamos la simulación.
       startTime = performance.now();
       simulador = new SimuladorColas();
-      simulador.simular(n, eventoDesde, mediaLlegadaPasajero, AFinFacturacion, BFinFacturacion, mediaVentaBillete, mediaChequeoBilletes, desEstChequeoBilletes, mediaControlMetales, mediaPasoEntreZonas);
+      simulador.simular(cantEventos, eventoDesde, mediaLlegadaClientes, finAtencionClienteA, finAtencionClienteB, mediaVentaBillete, mediaChequeoBilletes, desEstChequeoBilletes, mediaControlMetales, mediaPasoEntreZonas);
       console.log(`La simulación tardó ${performance.now() - startTime} milisegundos`);
 
       matrizEstado = simulador.getMatrizEstado();
@@ -169,7 +159,7 @@ const simular = () => {
 
 // Validación de los parámetros del usuario.
 function validarParametros(): boolean {
-  if (txtCantNros.value === '' || txtEventoDesde.value === '') {
+  if (txtCantEventos.value === '' || txtEventoDesde.value === '') {
     alert('Tiene que ingresar todos los parámetros solicitados.');
     return false;
   }
@@ -179,30 +169,30 @@ function validarParametros(): boolean {
     return false;
   }
 
-  n = Number(txtCantNros.value);
+  cantEventos = Number(txtCantEventos.value);
   eventoDesde = Number(txtEventoDesde.value);
-  mediaLlegadaPasajero = Number(txtMediaLlegadaPasajeros.value);
-  AFinFacturacion = Number(txtAFinDeFacturacion.value);
-  BFinFacturacion = Number(txtBFinDeFacturacion.value);
+  mediaLlegadaClientes = Number(txtMediaLlegadaClientes.value);
+  finAtencionClienteA = Number(txtFinAtencionClienteA.value);
+  finAtencionClienteB = Number(txtFinAtencionClienteB.value);
   mediaVentaBillete = Number(txtMediaFinVentaBillete.value);
   mediaChequeoBilletes = Number(txtMediaFinChequeoBillete.value);
   desEstChequeoBilletes = Number(txtDesEstFinChequeoBillete.value);
   mediaControlMetales = Number(txtMediaFinControlMetales.value);
   mediaPasoEntreZonas = Number(txtMediaFinPasoEntreZonas.value);
 
-  if (n <= 0) {
+  if (cantEventos <= 0) {
     alert('La cantidad de eventos a generar debe ser mayor a cero.');
     return false;
   }
-  if (eventoDesde < 0 || eventoDesde > n) {
-    alert('El evento desde ingresado debe estar comprendido entre 0 y ' + n + '.');
+  if (eventoDesde < 0 || eventoDesde > cantEventos) {
+    alert('El evento desde ingresado debe estar comprendido entre 0 y ' + cantEventos + '.');
     return false;
   }
-  if (mediaLlegadaPasajero < 0 || mediaVentaBillete < 0 || mediaChequeoBilletes < 0 || mediaControlMetales < 0 || mediaPasoEntreZonas < 0) {
+  if (mediaLlegadaClientes < 0 || mediaVentaBillete < 0 || mediaChequeoBilletes < 0 || mediaControlMetales < 0 || mediaPasoEntreZonas < 0) {
     alert('La media no puede ser un valor negativo.');
     return false;
   }
-  if (AFinFacturacion >= BFinFacturacion) {
+  if (finAtencionClienteA >= finAtencionClienteB) {
     alert('El valor de "B" debe ser mayor a "A".');
     return false;
   }
