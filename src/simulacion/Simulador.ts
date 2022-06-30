@@ -74,6 +74,7 @@ export class Simulador {
 
     // Empleado.
     let empleado = new Empleado();
+    let estaEnHorarioAtencion: boolean = true;
     let colaClientes: Cliente[] = [];
     let tiempoRemanenteReparacion: number = -1;
     let colaZapatosAReparar: ParZapatos[] = [];
@@ -143,7 +144,12 @@ export class Simulador {
           switch (objetivoVisita) {
             // Llega un cliente que quiere retirar un par de zapatos reparados.
             case "Retiro": {
-              if (empleado.estaLibre()) {
+              if (empleado.estaLibre() || empleado.estaReparando()) {
+                if (empleado.estaReparando()) {
+                  // Cálculo del tiempo remanente de reparación.
+                  tiempoRemanenteReparacion = finReparacion - reloj;
+                  finReparacion = -1;
+                }
                 cliente.retirandoZapatos();
                 empleado.atendiendo();
   
@@ -151,10 +157,6 @@ export class Simulador {
                 rndAtencion = Math.random();
                 tiempoAtencion = this.getTiempoAtencion(rndAtencion);
                 finAtencion = (reloj + tiempoAtencion);
-              }
-              else if (empleado.estaReparando()) {
-                tiempoRemanenteReparacion = finReparacion - reloj;
-                finReparacion = -1;
               }
               else {
                 cliente.enEsperaRetiro();
@@ -165,7 +167,12 @@ export class Simulador {
   
             // Llega un cliente que quiere realizar un pedido de reparación de un par de zapato.
             case "Pedido": {
-              if (empleado.estaLibre()) {
+              if (empleado.estaLibre() || empleado.estaReparando()) {
+                if (empleado.estaReparando()) {
+                  // Cálculo del tiempo remanente de reparación.
+                  tiempoRemanenteReparacion = finReparacion - reloj;
+                  finReparacion = -1;
+                }
                 cliente.haciendoPedido();
                 empleado.atendiendo();
   
