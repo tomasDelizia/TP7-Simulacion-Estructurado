@@ -17,6 +17,12 @@ const txtTiempoAtencionClienteB: HTMLInputElement = document.getElementById('txt
 const txtTiempoReparacionZapatosA: HTMLInputElement = document.getElementById('txtTiempoReparacionZapatosA') as HTMLInputElement;
 const txtTiempoReparacionZapatosB: HTMLInputElement = document.getElementById('txtTiempoReparacionZapatosB') as HTMLInputElement;
 
+// Definición de las alertas para mostrar las métricas.
+const alertTiempoPromedioReparacion: HTMLDivElement = document.getElementById('alertTiempoPromedioReparacion') as HTMLDivElement;
+const alertCantMaxColaZapatos: HTMLDivElement = document.getElementById('alertCantMaxColaZapatos') as HTMLDivElement;
+const alertTiempoPromedioAtencionClientes: HTMLDivElement = document.getElementById('alertTiempoPromedioAtencionClientes') as HTMLDivElement;
+const alertPorcentajeClientesRechazados: HTMLDivElement = document.getElementById('alertPorcentajeClientesRechazados') as HTMLDivElement;
+
 // Definición de la secciones.
 const divTablaSimulacion: HTMLDivElement = document.getElementById('divTablaSimulacion') as HTMLDivElement;
 const divRungeKutta: HTMLDivElement = document.getElementById('divRungeKutta') as HTMLDivElement;
@@ -93,6 +99,12 @@ const mostrarRK = () => {
 const simular = () => {
   // Validamos los parámetros ingresados por el usuario.
   if (!validarParametros()) return;
+
+  // Mostramos las métricas.
+  alertTiempoPromedioReparacion.innerHTML = 'Tiempo Promedio de Reparación de Par de Zapatos: ';
+  alertCantMaxColaZapatos.innerHTML = 'Cantidad Máxima de Par de Zapatos a Reparar en la Cola: ';
+  alertTiempoPromedioAtencionClientes.innerHTML = 'Tiempo Promedio de Atención de Clientes: ';
+  alertPorcentajeClientesRechazados.innerHTML = 'Porcentaje de Clientes Rechazados: ';
 
   var startTime = performance.now();
   HTMLUtils.limpiarTablaSimulacion(tablaSimulacion, cantEncabezadosTablaSimulacion, cantSubEncabezadosTablaSimulacion);

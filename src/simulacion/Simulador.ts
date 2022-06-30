@@ -89,18 +89,18 @@ export class Simulador {
     // Métricas.
     let acumuladorTiempoReparacion: number = 0;
     let cantZapatosReparados: number = 0;
-    let totalClientes: number = 0;
-    let totalParZapatos: number = 0;
+    let cantMaxZapatosEnCola: number = 0;
+    let acumuladorTiempoAtencion: number = 0;
+    let cantClientesAtendidos: number = 0;
+    let cantClientesRechazados: number = 0;
+    let cantClientesIngresados: number = 0;
+    let cantZapatosIngresados: number = 0;
 
     for (let i: number = 0; i < cantEventos; i++) {
       evento = [];
       // Determinamos el tipo de evento.
-      if (i == 0) {
-        tipoEvento = TipoEvento.INICIO_SIMULACION;
-      }
-      else if (i == cantEventos - 1) {
-        tipoEvento = TipoEvento.FIN_SIMULACION;
-      }
+      if (i == 0) tipoEvento = TipoEvento.INICIO_SIMULACION;
+      else if (i == cantEventos - 1) tipoEvento = TipoEvento.FIN_SIMULACION;
       else {
         let eventosCandidatos: number[] = [
           proximaLlegada,
@@ -114,6 +114,7 @@ export class Simulador {
       switch (tipoEvento) {
         // Inicio de la simulación.
         case TipoEvento.INICIO_SIMULACION: {
+          // Cálculo de la próxima llegada.
           rndLlegada = Math.random();
           tiempoEntreLlegadas = this.getTiempoEntreLlegadas(rndLlegada);
           proximaLlegada = (reloj + tiempoEntreLlegadas);
@@ -131,13 +132,10 @@ export class Simulador {
           tiempoEntreLlegadas = this.getTiempoEntreLlegadas(rndLlegada);
           proximaLlegada = (reloj + tiempoEntreLlegadas);
           
-          totalClientes++;
+          cantClientesIngresados++;
 
           // Creamos el objeto cliente.
-          let cliente: Cliente = new Cliente(
-            totalClientes,
-            reloj
-          );
+          let cliente: Cliente = new Cliente(cantClientesIngresados, reloj);
 
           clientesEnSistema.push(cliente);
 
@@ -232,7 +230,7 @@ export class Simulador {
             finAtencion = (reloj + tiempoAtencion);
           }
           break;
-
+        }
 
         // // Fin de reparación de un par de zapatos.
         // case TipoEvento.FIN_REPARACION: {

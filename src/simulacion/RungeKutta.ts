@@ -28,7 +28,7 @@ export class RungeKutta {
       fila.push(k1, k2, k3, k4, t0, s0);
       this.matrizRK.push(fila);
     }
-    return this.matrizRK[this.matrizRK.length-1][6] * 10;
+    return this.matrizRK[this.matrizRK.length-1][6] * 60;
   }
 
   public getMatrizRK(): number[][] {
