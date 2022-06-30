@@ -11,24 +11,24 @@ export class Empleado {
     this.estado = EstadoEmpleado.LIBRE;
   }
 
-  public ocupado(): void {
-    this.estado = EstadoEmpleado.OCUPADO;
+  public atendiendo(): void {
+    this.estado = EstadoEmpleado.ATENDIENDO;
   }
 
-  public bloqueado(): void{
-    this.estado = EstadoEmpleado.BLOQUEADO;
+  public reparando(): void{
+    this.estado = EstadoEmpleado.REPARANDO;
   }
 
   public estaLibre(): boolean {
     return this.estado == EstadoEmpleado.LIBRE;
   }
 
-  public estaOcupado(): boolean {
-    return this.estado == EstadoEmpleado.OCUPADO;
+  public estaAtendiendo(): boolean {
+    return this.estado == EstadoEmpleado.ATENDIENDO;
   }
 
-  public estaBloqueado(): boolean {
-    return this.estado == EstadoEmpleado.BLOQUEADO;
+  public estaReparando(): boolean {
+    return this.estado == EstadoEmpleado.REPARANDO;
   }
 
   public getEstado(): string {

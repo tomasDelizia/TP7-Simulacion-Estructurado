@@ -101,7 +101,10 @@ const simular = () => {
   // Realizamos la simulación.
   startTime = performance.now();
   simulador = new Simulador();
-  simulador.simular(cantEventos, eventoDesde, probRetiro, probPedido, mediaLlegadaClientes, tiempoAtencionClienteA, tiempoAtencionClienteB, tiempoReparacionZapatosA, tiempoReparacionZapatosB);
+  rungeKutta = new RungeKutta();
+  let tiempoSecado: number = rungeKutta.getTiempoSecado(0, 0, 0.01);
+
+  simulador.simular(cantEventos, eventoDesde, probRetiro, probPedido, mediaLlegadaClientes, tiempoAtencionClienteA, tiempoAtencionClienteB, tiempoReparacionZapatosA, tiempoReparacionZapatosB, tiempoSecado);
 
   console.log(`La simulación tardó ${performance.now() - startTime} milisegundos`);
 
@@ -125,34 +128,48 @@ function validarParametros(): boolean {
 
   cantEventos = Number(txtCantEventos.value);
   eventoDesde = Number(txtEventoDesde.value);
+  probRetiro = Number(txtProbRetiro.value);
+  probPedido = Number(txtProbPedido.value);
   mediaLlegadaClientes = Number(txtMediaLlegadaClientes.value);
   tiempoAtencionClienteA = Number(txtTiempoAtencionClienteA.value);
   tiempoAtencionClienteB = Number(txtTiempoAtencionClienteB.value);
-  mediaVentaBillete = Number(txtMediaFinVentaBillete.value);
-  mediaChequeoBilletes = Number(txtMediaFinChequeoBillete.value);
-  desEstChequeoBilletes = Number(txtDesEstFinChequeoBillete.value);
-  mediaControlMetales = Number(txtMediaFinControlMetales.value);
-  mediaPasoEntreZonas = Number(txtMediaFinPasoEntreZonas.value);
+  tiempoReparacionZapatosA = Number(txtTiempoReparacionZapatosA.value);
+  tiempoReparacionZapatosB = Number(txtTiempoReparacionZapatosB.value);
 
   if (cantEventos <= 0) {
     alert('La cantidad de eventos a generar debe ser mayor a cero.');
     return false;
   }
+
   if (eventoDesde < 0 || eventoDesde > cantEventos) {
     alert('El evento desde ingresado debe estar comprendido entre 0 y ' + cantEventos + '.');
     return false;
   }
-  if (mediaLlegadaClientes < 0 || mediaVentaBillete < 0 || mediaChequeoBilletes < 0 || mediaControlMetales < 0 || mediaPasoEntreZonas < 0) {
-    alert('La media no puede ser un valor negativo.');
+
+  if (probRetiro < 0 || probRetiro > 1) {
+    alert('El valor de probabilidad de hacer un retiro debe estar entre 0 y 1');
     return false;
   }
+
+  if (probPedido < 0 || probPedido > 1) {
+    alert('El valor de probabilidad de hacer un pedido debe estar entre 0 y 1');
+    return false;
+  }
+
+  if (mediaLlegadaClientes) {
+    alert('La media de la llegada de clientes no puede ser un valor negativo.');
+    return false;
+  }
+
   if (tiempoAtencionClienteA >= tiempoAtencionClienteB) {
-    alert('El valor de "B" debe ser mayor a "A".');
+    alert('El valor de "B" del tiempo de atención de clientes debe ser mayor a "A".');
     return false;
   }
-  if (desEstChequeoBilletes < 0){
-    alert('La desviación estándar no puede ser un valor negativo.');
+
+  if (txtTiempoReparacionZapatosA >= txtTiempoReparacionZapatosB) {
+    alert('El valor de "B" del tiempo de reparación de zapatos debe ser mayor a "A".');
     return false;
   }
+
   return true;
 }

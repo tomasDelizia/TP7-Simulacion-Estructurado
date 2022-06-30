@@ -11,4 +11,13 @@ export module Utils {
     if (menor > 0) return menor;
     return -1;
   }
+
+  export function getDistribucionExponencial(rnd: number, media: number): number {
+    if (1 - rnd !== 0) return -media * Math.log(1 - rnd);
+    return -media * Math.log(1 - rnd + 9e-16);
+  }
+
+  export function getDistribucionUniforme(rnd: number, a: number, b: number): number {
+    return a + rnd * (b - a);
+  }
 }
