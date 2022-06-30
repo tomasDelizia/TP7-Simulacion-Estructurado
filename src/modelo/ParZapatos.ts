@@ -18,8 +18,16 @@ export class ParZapatos {
     this.estado = EstadoParZapatos.ESPERANDO_REPARACION;
   }
 
+  public pausarReparacion(): void {
+    this.estado = EstadoParZapatos.REPARACION_PAUSADA;
+  }
+
   public terminarReparacion(): void {
     this.estado = EstadoParZapatos.LISTOS;
+  }
+
+  public estaPausadoEnReparacion(): boolean {
+    return this.estado === EstadoParZapatos.REPARACION_PAUSADA;
   }
 
   public getEstado(): EstadoParZapatos {

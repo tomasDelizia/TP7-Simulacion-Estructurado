@@ -200,7 +200,8 @@ export class Simulador {
             }
           }
 
-          if (cola)
+          // Verificamos si había un par de zapatos siendo reparado antes de que llegue el cliente.
+          let parZapatosEnPausa: ParZapatos = parZapatosEnSistema.find(parZapatos => parZapatos.estaPausadoEnReparacion());
 
           // Se genera el tiempo que tardará el pasajero atendido en pasar a la zona de control de metales.
           rndPaseEntreFacturacionYControl = Math.random();
