@@ -1,33 +1,39 @@
-import { Empleado } from "./Empleado";
-import { EstadoPasajero } from "./EstadoPasajero";
-import { Evento } from "./Evento";
-import { Pasajero } from "./Pasajero";
-import { Simulador } from "./Simulador";
-import { Utils } from "./Utils";
+import { Empleado } from "../modelo/Empleado";
+import { Evento } from "../modelo/Evento";
+import { RungeKutta } from "./RungeKutta";
 
-export class SimuladorColas extends Simulador {
+export class Simulador {
+  private mediaLlegadasClientes: number;
+  
+  private tiempoAtencionClienteA: number;
+  private tiempoAtencionClienteB: number;
+
+  private tiempoReparacionZapatosA: number;
+  private tiempoReparacionZapatosB: number;
+
+  private matrizEstado: string[][];
+
+  private cantMaxPasajeros: number;
+
+  private probObjetivosVisita: number[];
 
   public simular(
     cantEventos: number,
     eventoDesde: number,
-    mediaLlegadaPasajero: number, 
-    AFinFacturacion: number, 
-    BFinFacturacion: number, 
-    mediaVentaBillete: number, 
-    mediaChequeoBilletes: number, 
-    desEstChequeoBilletes: number, 
-    mediaControlMetales: number, 
-    mediaPasoEntreZonas: number): void {
-    
-    this.probTiposPasajeros = [0.3, 0.45, 1];
-    this.mediaTiempoEntreLlegadas = mediaLlegadaPasajero;
-    this.aTiempoFacturacion = AFinFacturacion;
-    this.bTiempoFacturacion = BFinFacturacion;
-    this.mediaTiempoVentaBilletes = mediaVentaBillete;
-    this.mediaTiempoChequeoBilletes = mediaChequeoBilletes;
-    this.desviacionTiempoChequeoBilletes = desEstChequeoBilletes;
-    this.mediaTiempoControlMetales = mediaControlMetales;
-    this.mediaTiempoPasoEntreZonas = mediaPasoEntreZonas;
+    probRetiro: number,
+    probPedido: number,
+    mediaLlegadaClientes: number,
+    tiempoAtencionClienteA: number, 
+    tiempoAtencionClienteB: number,
+    tiempoReparacionZapatosA: number,
+    tiempoReparacionZapatosB: number
+    ): void {
+    this.mediaLlegadasClientes = mediaLlegadaClientes;
+    this.tiempoAtencionClienteA = tiempoAtencionClienteA;
+    this.tiempoAtencionClienteB = tiempoAtencionClienteB;
+    this.tiempoReparacionZapatosA = tiempoReparacionZapatosA;
+    this.tiempoReparacionZapatosB = tiempoReparacionZapatosB;
+    this.probObjetivosVisita = [probRetiro, probPedido];
 
     this.matrizEstado = [];
 
@@ -36,31 +42,18 @@ export class SimuladorColas extends Simulador {
     if (indiceHasta > cantEventos - 1)
       indiceHasta = cantEventos;
 
-    // Vector de estado.
+    // Vector de estado de la iteración actual.
     let evento: string[] = [];
 
     let tipoEvento: Evento;
     let reloj: number = 0;
 
-    // Llegada de un pasajero.
+    // Llegada de un cliente.
     let rndLlegada: number = -1;
     let tiempoEntreLlegadas: number = -1;
     let proximaLlegada: number = -1;
     let rndTipoPasajero: number = -1;
     let tipoPasajero: string = '';
-
-    // Llegada de un bloqueo.
-    let rndValorbeta: number = -1;
-    let tiempoEntreBloqueos: number = -1;
-    let proximoBloqueo: number = -1;
-    let rndObjetivoBloqueo: number = -1;
-    let objetivoBloqueo: string = '';
-    
-    // Bloqueo a un cliente en la puerta del aeropuerto.
-    let tiempoBloqueoCliente: number = -1;
-    let finBloqueoCliente: number = -1;
-    let estaBloqueadaLaEntrada: boolean = false;
-    let colaPasajerosBloqueadosEnIngreso: Pasajero[] = [];
 
     // Facturación de pasajero.
     let rndFacturacion: number = -1;
@@ -768,6 +761,7 @@ export class SimuladorColas extends Simulador {
     }
   }
 
+  
   public getSiguienteEvento(tiemposEventos: number[]): Evento {
     let menor: number = Utils.getMenorMayorACero(tiemposEventos);
     for (let i: number = 0; i < tiemposEventos.length; i++) {
@@ -793,4 +787,51 @@ export class SimuladorColas extends Simulador {
     }
     return -1;
   }
-}
+
+  public getMatrizEstado(): string[][] {
+      return this.matrizEstado;
+  }
+
+  public getCantMaxPasajerosEnSistema(): number {
+    return this.cantMaxPasajeros;
+  }
+
+  public getDistribucionExponencial(rnd: number, media: number): number {
+    if (1 - rnd !== 0) return -media * Math.log(1 - rnd);
+    return -media * Math.log(1 - rnd + 9e-16);
+  }
+
+  // Cálculo del tiempo entre llegadas, que tiene distribución exponencial.
+  public getTiempoEntreLlegadas(rndLlegada: number): number {
+    let tiempo: number = this.getDistribucionExponencial(rndLlegada, this.mediaTiempoEntreLlegadas);
+    return tiempo;
+  }
+
+  // Obtención del tipo de pasajero según la probabilidad asociada.
+  public getTipoPasajero(probTipoPasajero: number, tiposPasajeros: string[]): string {
+    for (let i: number = 0; i < this.probTiposPasajeros.length; i++) {
+      if (probTipoPasajero < this.probTiposPasajeros[i])
+        return tiposPasajeros[i];
+    }
+  }
+
+  // Obtención del objetivo del bloqueo según la probabilidad asociada.
+  public getObjetivoBloqueo(probObjetivo: number): string {
+    const tipos: string[] = ["Cliente", "Empleado Chequeo"];
+    for (let i: number = 0; i < this.probObjetivosBloqueo.length; i++) {
+      if (probObjetivo < this.probObjetivosBloqueo[i])
+        return tipos[i];
+    }
+  }
+
+  // Cálculo del tiempo de facturación, que tiene distribución uniforme.
+  public getTiempoFacturacion(rndTiempoFacturacion: number): number {
+    let tiempo: number = this.aTiempoFacturacion + rndTiempoFacturacion * (this.bTiempoFacturacion - this.aTiempoFacturacion);
+    return tiempo;
+  }
+
+  // Cálculo del tiempo de venta de billete, que tiene distribución exponencial.
+  public getTiempoVentaBillete(rndTiempoVenta: number): number {
+    let tiempo: number = this.getDistribucionExponencial(rndTiempoVenta, this.mediaTiempoVentaBilletes);
+    return tiempo;
+  }

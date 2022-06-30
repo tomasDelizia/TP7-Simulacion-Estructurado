@@ -72,6 +72,7 @@ export module HTMLUtils {
     }
   }
 
+  // Crea una tabla html a partir de una matriz del método de Runge-Kutta de 4to orden.
   export function crearTablaRK(matriz: number[][], y: string): string {
     let tabla: string = '<div class="table-responsive scrollable row mb-3 mx-3">';
     tabla += '<table class="table table-hover table-bordered mx-3 mb-3">';

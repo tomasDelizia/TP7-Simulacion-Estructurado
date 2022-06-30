@@ -1,10 +1,10 @@
-import { EstadoPasajero } from "./EstadoPasajero";
+import { EstadoCliente } from "./EstadoCliente";
 
-export class Pasajero {
+export class Cliente {
   private id: number;
   private tipoPasajero: string;
   private minutoLlegada: number;
-  private estado: EstadoPasajero;
+  private estado: EstadoCliente;
   private _minutoLlegadaDeVentaAFacturacion: number;
   private _minutoLlegadaDeFacturacionAControl: number;
   private _minutoLlegadaDeChequeoBilleteAControl: number;
@@ -53,62 +53,62 @@ export class Pasajero {
   }
 
   public facturandoEquipaje(): void {
-    this.estado = EstadoPasajero.FACTURANDO_EQUIPAJE;
+    this.estado = EstadoCliente.FACTURANDO_EQUIPAJE;
   }
 
   public enEsperaFacturacion(): void {
-    this.estado = EstadoPasajero.ESPERANDO_FACTURACION;
+    this.estado = EstadoCliente.ESPERANDO_FACTURACION;
   }
 
   public enControlMetales(): void {
-    this.estado = EstadoPasajero.EN_CONTROL_METALES;
+    this.estado = EstadoCliente.EN_CONTROL_METALES;
   }
 
   public enEsperaControlMetales(): void {
-    this.estado = EstadoPasajero.ESPERANDO_CONTROL;
+    this.estado = EstadoCliente.ESPERANDO_CONTROL;
   }
 
   public comprandoBillete(): void {
-    this.estado = EstadoPasajero.COMPRANDO_BILLETE;
+    this.estado = EstadoCliente.COMPRANDO_BILLETE;
   }
 
   public enEsperaCompraBillete(): void {
-    this.estado = EstadoPasajero.ESPERANDO_COMPRA_BILLETE;
+    this.estado = EstadoCliente.ESPERANDO_COMPRA_BILLETE;
   }
 
   public chequeandoBillete(): void {
-    this.estado = EstadoPasajero.CHEQUEANDO_BILLETE;
+    this.estado = EstadoCliente.CHEQUEANDO_BILLETE;
   }
 
   public enEsperaChequeoBilletes(): void {
-    this.estado = EstadoPasajero.ESPERANDO_CHEQUEO_BILLETE;
+    this.estado = EstadoCliente.ESPERANDO_CHEQUEO_BILLETE;
   }
 
   public pasandoDeVentaAFacturacion(): void {
-    this.estado = EstadoPasajero.PASANDO_DE_VENTA_A_FACTURACION;
+    this.estado = EstadoCliente.PASANDO_DE_VENTA_A_FACTURACION;
   }
 
   public pasandoDeFacturacionAControl(): void {
-    this.estado = EstadoPasajero.PASANDO_DE_FACTURACION_A_CONTROL;
+    this.estado = EstadoCliente.PASANDO_DE_FACTURACION_A_CONTROL;
   }
 
   public pasandoDeChequeoAControl(): void {
-    this.estado = EstadoPasajero.PASANDO_DE_CHEQUEO_BILLETE_A_CONTROL;
+    this.estado = EstadoCliente.PASANDO_DE_CHEQUEO_BILLETE_A_CONTROL;
   }
 
   public pasandoDeControlAEmbarque(): void {
-    this.estado = EstadoPasajero.PASANDO_DE_CONTROL_A_EMBARQUE;
+    this.estado = EstadoCliente.PASANDO_DE_CONTROL_A_EMBARQUE;
   }
 
   public bloqueadoEnEntrada(): void {
-    this.estado = EstadoPasajero.BLOQUEADO_EN_ENTRADA;
+    this.estado = EstadoCliente.BLOQUEADO_EN_ENTRADA;
   }
 
   public bloqueadoEnChequeo(): void {
-    this.estado = EstadoPasajero.BLOQUEADO_EN_CHEQUEO;
+    this.estado = EstadoCliente.BLOQUEADO_EN_CHEQUEO;
   }
 
-  public getEstado(): EstadoPasajero {
+  public getEstado(): EstadoCliente {
     return this.estado;
   }
 
