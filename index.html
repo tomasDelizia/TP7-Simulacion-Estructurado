@@ -3,50 +3,32 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TP6 Simulación</title>
+    <title>TP7 Simulación</title>
     <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.css"/>
     <div id="app"></div>
   </head>
 
   <body>
-    <h1 class="text-center">Trabajo Práctico N°6 de Simulación</h1>
-    <h2 class="text-center">Modelos de Simulación Complejos</h2>
+    <h1 class="text-center">Trabajo Práctico N°7 de Simulación</h1>
+    <h2 class="text-center">Zapatería</h2>
 
     <div class="container">
 
       <h2>Parámetros:</h2>
-      <form>
-        <div class="row mb-3 mx-3">
+
+      <fieldset class="container">
+        <div class="row">
           <div class="col-md">
             <label class="form-label" for="txtCantNros">Cantidad de eventos (N): </label>
-            <input
-              type="number"
-              class="form-control form-control-sm mb-3 tamanio"
-              id="txtCantNros"
-              name="txtCantNros"
-            />
+            <input type="number" class="form-control form-control-sm mb-3 tamanio" id="txtCantNros" name="txtCantNros"/>
           </div>
   
           <div class="col-md">
             <label class="form-label" for="txtEventoDesde">Evento desde:</label>
-            <input
-              type="number"
-              class="form-control form-control-sm mb-3 tamanio"
-              id="txtEventoDesde"
-              name="txtEventoDesde"
-            />
-          </div>
-  
-          <div class="col-md">
-            <label class="form-label" for="cboJuntarVentanilla">Juntar Ventanillas de Facturación y Venta:</label>
-            <select class="form-select mb-3 tamanio" id="cboJuntarVentanilla">
-              <option value="0" selected>Seleccione una opción...</option>
-              <option value="1">Sí</option>
-              <option value="2">No</option>
-            </select>
+            <input type="number" class="form-control form-control-sm mb-3 tamanio" id="txtEventoDesde" name="txtEventoDesde"/>
           </div>
         </div>
-      </form>
+      </fieldset>
 
       <h2>Eventos:</h2>
       <form>
