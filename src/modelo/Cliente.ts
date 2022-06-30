@@ -2,7 +2,6 @@ import { EstadoCliente } from "./EstadoCliente";
 
 export class Cliente {
   private id: number;
-  private objetivoVisita: string;
   private minutoLlegada: number;
   private estado: EstadoCliente;
 
@@ -25,6 +24,10 @@ export class Cliente {
 
   public enEsperaRetiro(): void {
     this.estado = EstadoCliente.ESPERANDO_RETIRO;
+  }
+
+  public estaSiendoAtendido(): boolean {
+    return (this.estado === EstadoCliente.HACIENDO_PEDIDO || this.estado === EstadoCliente.RETIRANDO_ZAPATOS);
   }
 
   public getEstado(): EstadoCliente {

@@ -180,35 +180,46 @@ export class Simulador {
           break;
         }
 
-        // // Fin de atención de cliente.
-        // case TipoEvento.FIN_ATENCION: {
-        //   finAtencion = -1;
-        //   // Se genera el tiempo que tardará el pasajero atendido en pasar a la zona de control de metales.
-        //   rndPaseEntreFacturacionYControl = Math.random();
-        //   tiempoPaseEntreFacturacionYControl = this.getTiempoPasoEntreZonas(rndPaseEntreFacturacionYControl);
-        //   finPaseEntreFacturacionYControl = (reloj + tiempoPaseEntreFacturacionYControl);
-        //   // Buscamos el pasajero atendido y le cambiamos el estado.
-        //   let pasajeroAtendido: Pasajero = clientesEnSistema.find(pasajero => pasajero.getEstado() === // EstadoPasajero.FACTURANDO_EQUIPAJE);
-        //   pasajeroAtendido.pasandoDeFacturacionAControl();
-        //   pasajeroAtendido.minutoLlegadaDeFacturacionAControl = finPaseEntreFacturacionYControl;
-        //   // Preguntamos si hay alguien en la cola.
-        //   if (colaClientes.length === 0) {
-        //     empleado.libre();
-        //   }
-        //   else {
-        //     // El servidor pasa de ocupado a ocupado.
-        //     empleado.ocupado();
-// 
-        //     // Quitamos a un pasajero de la cola y cambiamos su estado.
-        //     colaClientes.shift().facturandoEquipaje();
-        //     // Generamos el tiempo de facturación.
-        //     rndAtencion = Math.random();
-        //     tiempoAtencion = this.getTiempoReparacion(rndAtencion);
-        //     finAtencion = (reloj + tiempoAtencion);
-        //   }
-        //   break;
-        // }
-// 
+        // Fin de atención de cliente.
+        case TipoEvento.FIN_ATENCION: {
+          finAtencion = -1;
+
+          // Buscamos el cliente atendido.
+          let clienteAtendido: Cliente = clientesEnSistema.find(cliente => cliente.estaSiendoAtendido());
+
+          switch (clienteAtendido.getEstado()) {
+            case (EstadoCliente.RETIRANDO_ZAPATOS): {
+              break;
+            }
+            case (EstadoCliente.HACIENDO_PEDIDO): {
+              break;
+            }
+          }
+
+          // Se genera el tiempo que tardará el pasajero atendido en pasar a la zona de control de metales.
+          rndPaseEntreFacturacionYControl = Math.random();
+          tiempoPaseEntreFacturacionYControl = this.getTiempoPasoEntreZonas(rndPaseEntreFacturacionYControl);
+          finPaseEntreFacturacionYControl = (reloj + tiempoPaseEntreFacturacionYControl);
+          
+          clienteAtendido.pasandoDeFacturacionAControl();
+          clienteAtendido.minutoLlegadaDeFacturacionAControl = finPaseEntreFacturacionYControl;
+          // Preguntamos si hay alguien en la cola.
+          if (colaClientes.length === 0) {
+            empleado.libre();
+          }
+          else {
+            // El servidor pasa de ocupado a ocupado.
+            empleado.ocupado();
+            // Quitamos a un pasajero de la cola y cambiamos su estado.
+            colaClientes.shift().facturandoEquipaje();
+            // Generamos el tiempo de facturación.
+            rndAtencion = Math.random();
+            tiempoAtencion = this.getTiempoReparacion(rndAtencion);
+            finAtencion = (reloj + tiempoAtencion);
+          }
+          break;
+
+
         // // Fin de reparación de un par de zapatos.
         // case TipoEvento.FIN_REPARACION: {
         //   finReparacion = -1;
