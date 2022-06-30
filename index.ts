@@ -32,7 +32,8 @@ const tablaSimulacion: HTMLTableElement = document.getElementById('tablaSimulaci
 const cantEncabezadosTablaSimulacion = tablaSimulacion.rows[0].cells.length;
 const cantSubEncabezadosTablaSimulacion = tablaSimulacion.rows[1].cells.length;
 const indicesEventosCandidatos: number[] = [5, 10, 14, 17, 20, 24, 26, 29];
-const colPasajeros: string[] = ['ID Pasajero', 'Tipo Pasajero', 'Estado', 'Minuto llegada', 'Minuto llegada de venta a facturación', 'Minuto llegada de facturación a control', 'Minuto llegada de chequeo a control', 'Minuto llegada de control a embarque'];
+const columnasClientes: string[] = ['N° Cliente', 'Estado', 'Minuto llegada'];
+const columnasParZapatos: string[] = ['N° Par', 'Estado', 'Minuto llegada'];
 
 // Definición de botones de la interfaz de usuario.
 const btnSimular: HTMLButtonElement = document.getElementById('btnSimular') as HTMLButtonElement;
@@ -41,7 +42,6 @@ const btnRK: HTMLButtonElement = document.getElementById('btnRK') as HTMLButtonE
 // Definición de los objetos que realizan la simulación de colas.
 let simulador: Simulador;
 let matrizEstado: string[][];
-let cantMaxPasajeros: number;
 let rungeKutta: RungeKutta;
 
 // Definición de los parámetros.
@@ -114,18 +114,20 @@ const simular = () => {
   startTime = performance.now();
   simulador = new Simulador();
   rungeKutta = new RungeKutta();
-  let tiempoSecado: number = rungeKutta.getTiempoSecado(0, 0, 0.01);
+  let tiempoSecado: number = rungeKutta.getTiempoSecado(0, 0, 0.001);
 
   simulador.simular(cantEventos, eventoDesde, probRetiro, probPedido, mediaLlegadaClientes, tiempoAtencionClienteA, tiempoAtencionClienteB, tiempoReparacionZapatosA, tiempoReparacionZapatosB, tiempoSecado);
 
   console.log(`La simulación tardó ${performance.now() - startTime} milisegundos`);
 
   matrizEstado = simulador.getMatrizEstado();
-  cantMaxPasajeros = simulador.getCantMaxPasajerosEnSistema();
+  let cantMaxClientes: number = simulador.getCantMaxClientes();
+  let cantMaxParZapatos: number = simulador.getCantMaxParZapatos();
 
   // Cargamos la tabla a mostrar.
   startTime = performance.now();
-  HTMLUtils.completarEncabezadosPasajeros(cantMaxPasajeros, tablaSimulacion, colPasajeros);
+  HTMLUtils.agregarEncabezados(cantMaxClientes, tablaSimulacion, columnasClientes);
+  HTMLUtils.agregarEncabezados(cantMaxParZapatos, tablaSimulacion, columnasParZapatos);
   HTMLUtils.llenarTablaSimulacion(matrizEstado, indicesEventosCandidatos, tablaSimulacion);
   console.log(`La renderización tardó ${performance.now() - startTime} milisegundos`);
   HTMLUtils.mostrarSeccion(divTablaSimulacion);

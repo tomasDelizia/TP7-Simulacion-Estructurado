@@ -17,8 +17,9 @@ export class Simulador {
 
   private matrizEstado: string[][];
 
-  private cantMaxPasajeros: number;
-
+  private cantMaxClientes: number;
+  private cantMaxParZapatos: number;
+  
   private probObjetivosVisita: number[];
 
   public simular(
@@ -41,7 +42,8 @@ export class Simulador {
     this.tiempoSecado = tiempoSecado;
     this.probObjetivosVisita = [probRetiro, probPedido];
     this.matrizEstado = [];
-    this.cantMaxPasajeros = 0;
+    this.cantMaxClientes = 0;
+    this.cantMaxParZapatos = 0;
 
     // Definimos el rango de filas que vamos a mostrar.
     let indiceHasta: number = eventoDesde + 399;
@@ -118,25 +120,34 @@ export class Simulador {
           rndLlegada = Math.random();
           tiempoEntreLlegadas = this.getTiempoEntreLlegadas(rndLlegada);
           proximaLlegada = (reloj + tiempoEntreLlegadas);
+
+          // Carga de condiciones iniciales.
+          for (let i: number = 1; i <= 10; i++) {
+            cantZapatosIngresados++;
+            cantZapatosReparados++;
+            let parZapatosReparados: ParZapatos = new ParZapatos(i, -1);
+            parZapatosEnSistema.push(parZapatosReparados);
+            colaZapatosListos.push(parZapatosReparados);
+          }
           break;
         }
 
         // Llegada de un cliente.
         case TipoEvento.LLEGADA_CLIENTE: {
-          // Obtenemos el objetivo de la visita.
-          rndObjetivoVisita = Math.random();
-          objetivoVisita = this.getObjetivoVisita(rndObjetivoVisita);
-
           // Generamos la llegada del próximo cliente.
           rndLlegada = Math.random();
           tiempoEntreLlegadas = this.getTiempoEntreLlegadas(rndLlegada);
           proximaLlegada = (reloj + tiempoEntreLlegadas);
           
+          // Obtenemos el objetivo de la visita.
+          rndObjetivoVisita = Math.random();
+          objetivoVisita = this.getObjetivoVisita(rndObjetivoVisita);
+          
+          // Actualizamos contador de pacientes que alguna vez ingresaron al sistema.
           cantClientesIngresados++;
 
           // Creamos el objeto cliente.
           let cliente: Cliente = new Cliente(cantClientesIngresados, reloj);
-
           clientesEnSistema.push(cliente);
 
           switch (objetivoVisita) {
@@ -330,8 +341,8 @@ export class Simulador {
         this.matrizEstado.push(evento);
 
         // Actualizamos la cantidad de pasajeros máximos que hubo en el sistema.
-        if (clientesEnSistema.length > this.cantMaxPasajeros)
-          this.cantMaxPasajeros = clientesEnSistema.length;
+        if (clientesEnSistema.length > this.cantMaxClientes)
+          this.cantMaxClientes = clientesEnSistema.length;
       }
 
       // Reseteamos algunas variables.
@@ -360,8 +371,14 @@ export class Simulador {
       return this.matrizEstado;
   }
 
-  public getCantMaxPasajerosEnSistema(): number {
-    return this.cantMaxPasajeros;
+  // Devuelve la máxima cantidad de clientes que hubo en algún momento en el sistema para el intervalo de iteraciones a mostrar.
+  public getCantMaxClientes(): number {
+    return this.cantMaxClientes;
+  }
+
+  // Devuelve la máxima cantidad de pares de zapatos que hubo en algún momento en el sistema para el intervalo de iteraciones a mostrar.
+  public getCantMaxParZapatos(): number {
+    return this.cantMaxParZapatos;
   }
 
   // Cálculo del tiempo entre llegadas, que tiene distribución exponencial.

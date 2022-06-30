@@ -53,16 +53,16 @@ export module HTMLUtils {
     tabla.hidden = false;
   }
 
-  // Completa los encabezados de la tabla con los datos de los pasajeros.
-  export function completarEncabezadosPasajeros(cantPasajeros: number, tabla: HTMLTableElement, columnas: string[]): void {
+  // Añade encabezados a la tabla según la cantidad de clientes.
+  export function agregarEncabezados(cantidad: number, tabla: HTMLTableElement, columnas: string[]): void {
     let encabezados: HTMLTableRowElement = tabla.rows[0];
     let subEncabezados: HTMLTableRowElement = tabla.rows[1];
 
-    for (let i: number = 0; i < cantPasajeros; i++) {
+    for (let i: number = 0; i < cantidad; i++) {
       let col: HTMLTableHeaderCellElement = encabezados.insertCell();
       col.colSpan = columnas.length;
       col.style.fontWeight = "bold";
-      col.appendChild(document.createTextNode('Pasajero N° ' + (i+1)));
+      col.appendChild(document.createTextNode('N° ' + (i+1)));
 
       for (let j: number = 0; j < columnas.length; j++) {
         let subCol: HTMLTableHeaderCellElement = subEncabezados.insertCell();
