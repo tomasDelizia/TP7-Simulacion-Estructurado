@@ -9,126 +9,101 @@
   </head>
 
   <body>
-    <h1 class="text-center">Trabajo Práctico N°7 de Simulación</h1>
-    <h2 class="text-center">Zapatería</h2>
+    <h1 class="text-center">Trabajo Práctico N°7 de Simulación: Zapatería</h1>
 
     <div class="container">
-
-      <h2>Parámetros:</h2>
-
-      <fieldset class="container">
-        <div class="row">
-          <div class="col-md">
-            <label class="form-label" for="txtCantNros">Cantidad de eventos (N): </label>
-            <input type="number" class="form-control form-control-sm mb-3 tamanio" id="txtCantNros" name="txtCantNros"/>
-          </div>
-  
-          <div class="col-md">
-            <label class="form-label" for="txtEventoDesde">Evento desde:</label>
-            <input type="number" class="form-control form-control-sm mb-3 tamanio" id="txtEventoDesde" name="txtEventoDesde"/>
-          </div>
-        </div>
-      </fieldset>
-
-      <h2>Eventos:</h2>
       <form>
-        <div class="row mb-3 mx-3">
-          <div class="col-md">
-            <label class="form-label" for="txtLlegadaPasajeros"> <b>Llegada de pasajero a aeropuerto: Exponencial (µ)</b> </label>
-            <input
-              type="number"
-              class="form-control form-control-sm mb-3 tamanio"
-              id="txtMediaLlegadaPasajeros"
-              name="txtMediaLlegadaPasajero"
-              placeholder="3.4474"
-              value="3.4474"
-            />
+        <h2>Parámetros:</h2>
+
+        <div class="form-group row">
+          <label class="col-sm-3 col-form-label text-sm-end" for="txtCantNros">Cantidad de eventos (N)</label>
+          <div class="col-sm-2">
+            <input type="number" class="form-control" id="txtCantNros" name="txtCantNros"/>
+          </div>
+          
+          <label class="col-sm-2 col-form-label text-sm-end" for="txtEventoDesde">Evento desde</label>
+          <div class="col-sm-2">
+            <input type="number" class="form-control" id="txtEventoDesde" name="txtEventoDesde"/>
           </div>
         </div>
 
-        <div class="row mb-3 mx-3">
-          <div class="col-md">
-            <label class="form-label" for="txtFinDeFacturacion"> <b>Fin de Facturacion: Uniforme (A)</b>  </label>
-              <input
-              type="number"
-              class="form-control form-control-sm mb-3 tamanio"
-              id="txtAFinDeFacturacion"
-              name="txtAFinDeFacturacion"
-              placeholder="2"
-              value="2"/>
-          </div>
-          <div class="col-md">
-            <label class="form-label" for="txtFinDeFacturacion"><b>(B)</b></label>
-            <input
-              type="number"
-              class="form-control form-control-sm mb-3 tamanio"
-              id="txtBFinDeFacturacion"
-              name="txtBFinDeFacturacion"
-              placeholder="5"
-              value="5"/>
-          </div>
-        </div>
+        <br>
 
-        <div class="row mb-3 mx-3">
-          <div class="col-md">
-            <label class="form-label" for="txtFinVentaBillete"> <b>Fin de Venta de Billete: Exponencial (µ)</b> </label>
-            <input
-              type="number"
-              class="form-control form-control-sm mb-3 tamanio"
-              id="txtMediaFinVentaBillete"
-              name="txtMediaFinVentaBillete"
-              placeholder="6.858"
-              value="6.858"/>
-          </div>
-        </div>
+        <h4>Eventos:</h4>
+        <ul>
+          <li class="my-3">
+  
+            <div class="form-group row">
+              <div class="col-auto"><b>Llegada de cliente (Distribución Exponencial Negativa):</b></div>
+              <label class="col-sm-auto col-form-label text-sm-end" for="txtMediaLlegadaClientes"> Media (µ)</label>
+              <div class="col-sm-2">
+                <input
+                type="number"
+                class="form-control"
+                id="txtMediaLlegadaClientes"
+                name="txtMediaLlegadaClientes"
+                value="15"
+                />
+              </div>
+            </div>
+          </li>
 
-        <div class="row mb-3 mx-3">
-          <div class="col-md">
-            <label class="form-label" for="txtFinChequeoBillete"> <b>Fin de Chequeo de Billetes: Normal (µ)</b> </label>
-            <input
-              type="number"
-              class="form-control form-control-sm mb-3 tamanio"
-              id="txtMediaFinChequeoBillete"
-              name="txtMediaFinChequeoBillete"
-              placeholder="1"
-              value="1"/>
-          </div>
-          <div class="col-md">
-            <label class="form-label" for="txtFinDeFacturacion"><b>(σ)</b></label>
-            <input
-              type="number"
-              class="form-control form-control-sm mb-3 tamanio"
-              id="txtDesEstFinChequeoBillete"
-              name="txtDesEstFinChequeoBillete"
-              placeholder="0.5"
-              value="0.5"/>
-          </div>
-        </div>
+          <li class="my-3">
+            Fin atención de cliente: Distribución Uniforme
+            <div class="form-group row">
+              <label class="col-sm-1 col-form-label text-sm-end" for="txtFinAtencionClienteA"> A</label>
+              <div class="col-sm-2">
+                <input
+                type="number"
+                class="form-control"
+                id="txtFinAtencionClienteA"
+                name="txtFinAtencionClienteA"
+                value="2"
+                />
+              </div>
 
-        <div class="row mb-3 mx-3">
-          <div class="col-md">
-            <label class="form-label" for="txtFinControlMetales"> <b>Fin de control de metales: Exponencial (µ)</b>  </label>
-            <input
-              type="number"
-              class="form-control form-control-sm mb-3 tamanio"
-              id="txtMediaFinControlMetales"
-              name="txtMediaFinControlMetales"
-              placeholder="2"
-              value="2"/>
-          </div>
-        </div>
+              <label class="col-sm-1 col-form-label text-sm-end" for="txtFinAtencionClienteB"> B</label>
+              <div class="col-sm-2">
+                <input
+                type="number"
+                class="form-control"
+                id="txtFinAtencionClienteB"
+                name="txtFinAtencionClienteB"
+                value="4"
+                />
+              </div>
+            </div>
+          </li>
 
-        <div class="row mb-3 mx-3">
-          <div class="col-md">
-            <label class="form-label" for="txtFinPasoEntreZonas"> <b>Fin de paso entre zonas: Exponencial (µ)</b>  </label>
-            <input
-              type="number"
-              class="form-control form-control-sm mb-3 tamanio"
-              id="txtMediaFinPasoEntreZonas"
-              name="txtMediaFinPasoEntreZonas"
-              placeholder="2"
-              value="2"/>
-          </div>
+          <li class="my-3">
+            Fin reparación de zapatos: Distribución Uniforme
+            <div class="form-group row">
+              <label class="col-sm-1 col-form-label text-sm-end" for="txtFinReparacionZapatosA"> A</label>
+              <div class="col-sm-2">
+                <input
+                type="number"
+                class="form-control"
+                id="txtFinReparacionZapatosA"
+                name="txtFinReparacionZapatosA"
+                value="2"
+                />
+              </div>
+
+              <label class="col-sm-1 col-form-label text-sm-end" for="txtFinReparacionZapatosB"> B</label>
+              <div class="col-sm-2">
+                <input
+                type="number"
+                class="form-control"
+                id="txtFinReparacionZapatosB"
+                name="txtFinReparacionZapatosB"
+                value="4"
+                />
+              </div>
+            </div>
+          </li>
+
+        </ul>
+        
         </div>
 
         <div class="row mb-3 mx-3">
@@ -140,9 +115,12 @@
             Simular
           </button>
         </div>
-      
-      </form>
+
     </div>
+
+    
+
+    
 
     <div id="divTablaSimulacion">
       <div class="container">

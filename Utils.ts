@@ -6,12 +6,9 @@ export module Utils {
         menor = vec[i];
         continue;
       }
-      if (vec[i] < menor && vec[i] > 0) {
-        menor = vec[i];
-      }
+      if (vec[i] < menor && vec[i] > 0) menor = vec[i];
     }
-    if (menor > 0)
-      return menor;
+    if (menor > 0) return menor;
     return -1;
   }
 }
