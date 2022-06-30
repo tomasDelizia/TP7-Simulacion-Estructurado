@@ -1,3 +1,6 @@
+import { RungeKutta } from './src/simulacion/RungeKutta';
+import { Simulador } from './src/simulacion/Simulador';
+import { HTMLUtils } from './src/utils/HTMLUtils';
 import './style.css';
 
 // Definición de los cuadros de texto de la interfaz de usuario.
