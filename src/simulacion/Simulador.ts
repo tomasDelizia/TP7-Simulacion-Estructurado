@@ -152,6 +152,10 @@ export class Simulador {
                 tiempoAtencion = this.getTiempoAtencion(rndAtencion);
                 finAtencion = (reloj + tiempoAtencion);
               }
+              else if (empleado.estaReparando()) {
+                tiempoRemanenteReparacion = finReparacion - reloj;
+                finReparacion = -1;
+              }
               else {
                 cliente.enEsperaRetiro();
                 colaClientes.push(cliente);
@@ -195,6 +199,8 @@ export class Simulador {
               break;
             }
           }
+
+          if (cola)
 
           // Se genera el tiempo que tardará el pasajero atendido en pasar a la zona de control de metales.
           rndPaseEntreFacturacionYControl = Math.random();
