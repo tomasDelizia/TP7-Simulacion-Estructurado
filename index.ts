@@ -54,6 +54,16 @@ let finReparacionZapatosB: number;
 HTMLUtils.ocultarSeccion(divTablaSimulacion);
 HTMLUtils.ocultarSeccion(divRungeKutta);
 
+// Detecta que el valor de la probabilidad de retiro de zapatos es ingresado por teclado y calcula la de pedido.
+txtProbRetiro.addEventListener('input', () => {
+  txtProbPedido.value = (1 - Number(txtProbRetiro.value)).toFixed(2);
+});
+
+// Detecta que el valor de la probabilidad de pedido de zapatos es ingresado por teclado y calcula la de retiro.
+txtProbPedido.addEventListener('input', () => {
+  txtProbRetiro.value = (1 - Number(txtProbPedido.value)).toFixed(2);
+});
+
 // Disparamos la simulación.
 btnSimular.addEventListener('click', () => {
   HTMLUtils.ocultarSeccion(divTablaSimulacion);
@@ -61,14 +71,11 @@ btnSimular.addEventListener('click', () => {
   simular();
 });
 
-// Mostramos las tablas de Runge-Kutta.
+// Mostramos la tabla de Runge-Kutta.
 btnRK.addEventListener('click', () => {
   mostrarRK();
 });
 
-btnRKAlternativo.addEventListener('click', () => {
-  mostrarRK();
-});
 
 const mostrarRK = () => {
   divRungeKutta.innerHTML = '';
