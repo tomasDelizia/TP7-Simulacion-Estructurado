@@ -30,6 +30,10 @@ export class ParZapatos {
     return this.estado === EstadoParZapatos.REPARACION_PAUSADA;
   }
 
+  public estaEnReparacion(): boolean {
+    return this.estado === EstadoParZapatos.EN_REPARACION;
+  }
+
   public getEstado(): EstadoParZapatos {
     return this.estado;
   }

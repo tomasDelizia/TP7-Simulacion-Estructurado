@@ -166,7 +166,7 @@ export class Simulador {
                     finReparacion = -1;
 
                     // Buscamos el par de zapatos que estaba siendo reparado, y actualizamos su estado.
-                    let parZapatosAPausar: ParZapatos = parZapatosEnSistema.find(parZapatos => parZapatos.enReparacion());
+                    let parZapatosAPausar: ParZapatos = parZapatosEnSistema.find(parZapatos => parZapatos.estaEnReparacion());
                     parZapatosAPausar.pausarReparacion();
                   }
                   cliente.retirandoZapatos();
@@ -175,7 +175,7 @@ export class Simulador {
                   // Generamos el tiempo de atención.
                   rndAtencion = Math.random();
                   tiempoAtencion = this.getTiempoAtencion(rndAtencion);
-                  finAtencion = (reloj + tiempoAtencion);
+                  finAtencion = reloj + tiempoAtencion;
                 }
                 // No hay zapatos listos para retirar, se va.
                 else {
@@ -202,7 +202,7 @@ export class Simulador {
                   finReparacion = -1;
 
                   // Buscamos el par de zapatos que estaba siendo reparado, y actualizamos su estado.
-                  let parZapatosAPausar: ParZapatos = parZapatosEnSistema.find(parZapatos => parZapatos.enReparacion());
+                  let parZapatosAPausar: ParZapatos = parZapatosEnSistema.find(parZapatos => parZapatos.estaEnReparacion());
                   parZapatosAPausar.pausarReparacion();
                 }
                 cliente.haciendoPedido();
@@ -211,7 +211,7 @@ export class Simulador {
                 // Generamos el tiempo de atención.
                 rndAtencion = Math.random();
                 tiempoAtencion = this.getTiempoAtencion(rndAtencion);
-                finAtencion = (reloj + tiempoAtencion);
+                finAtencion = reloj + tiempoAtencion;
               }
               // Si estaba atendiendo otro cliente, va a la cola.
               else {
@@ -298,7 +298,7 @@ export class Simulador {
                   // Generamos el tiempo de atención.
                   rndAtencion = Math.random();
                   tiempoAtencion = this.getTiempoAtencion(rndAtencion);
-                  finAtencion = (reloj + tiempoAtencion);
+                  finAtencion = reloj + tiempoAtencion;
                 }
                 // No hay zapatos listos para retirar, se va.
                 else {
@@ -310,13 +310,12 @@ export class Simulador {
               }
               // El cliente estaba esperando hacer un pedido de zapatos.
               case (EstadoCliente.ESPERANDO_HACER_PEDIDO): {
-                cliente.haciendoPedido();
-                zapatero.atendiendo();
+                clientePorAtender.haciendoPedido();
   
                 // Generamos el tiempo de atención.
                 rndAtencion = Math.random();
                 tiempoAtencion = this.getTiempoAtencion(rndAtencion);
-                finAtencion = (reloj + tiempoAtencion);
+                finAtencion = reloj + tiempoAtencion;
                 break;
               }
             }
@@ -324,32 +323,17 @@ export class Simulador {
           break;
         }
 
-        // // Fin de reparación de un par de zapatos.
-        // case TipoEvento.FIN_REPARACION: {
-        //   finReparacion = -1;
-        //   // Se genera el tiempo que tardará el pasajero atendido en pasar a la ventanilla de facturación.
-        //   rndPaseEntreVentaYFacturacion = Math.random();
-        //   tiempoPaseEntreVentaYFacturacion = this.getTiempoPasoEntreZonas(rndPaseEntreVentaYFacturacion);
-        //   finPaseEntreVentaYFacturacion = (reloj + tiempoPaseEntreVentaYFacturacion);
-        //   // Buscamos el pasajero atendido y le cambiamos el estado.
-        //   let pasajeroAtendido: Pasajero = clientesEnSistema.find(pasajero => pasajero.getEstado() === // EstadoPasajero.COMPRANDO_BILLETE);
-        //   pasajeroAtendido.pasandoDeVentaAFacturacion();
-        //   pasajeroAtendido.minutoLlegadaDeVentaAFacturacion = finPaseEntreVentaYFacturacion;
-        //   // Preguntamos si hay alguien en la cola.
-        //   if (colaVentaBillete.length === 0) {
-        //     empleadoVentaBillete.libre();
-        //   }
-        //   else {
-        //     empleadoVentaBillete.ocupado();
-        //     // Quitamos a un pasajero de la cola y cambiamos su estado.
-        //     colaVentaBillete.shift().comprandoBillete();
-        //     // Generamos el tiempo de venta de billete.
-        //     rndReparacion = Math.random();
-        //     tiempoReparacion = this.getTiempoVentaBillete(rndReparacion);
-        //     finReparacion = (reloj + tiempoReparacion);
-        //   }
-        //   break;
-        // }
+        // Fin de reparación de un par de zapatos.
+        case TipoEvento.FIN_REPARACION: {
+          finReparacion = -1;
+    
+          // Buscamos el par de zapatos que estaba en reparación, le cambiamos el estado y lo agregamos a la cola de zapatos listos para retirar.
+          let parZapatosReparado: ParZapatos = parZapatosEnSistema.find(parZapatos => parZapatos.estaEnReparacion());
+          parZapatosReparado.terminarReparacion();
+          colaZapatosListos.push(parZapatosReparado);
+
+          break;
+        }
 
         // Fin de recepción pedidos.
         case TipoEvento.FIN_RECEPCION_PEDIDOS: {
