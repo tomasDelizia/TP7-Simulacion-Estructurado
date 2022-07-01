@@ -1,3 +1,5 @@
+import { Utils } from "./Utils";
+
 export module HTMLUtils {
 
   // Función para ocultar un elemento div.
@@ -25,13 +27,21 @@ export module HTMLUtils {
 
   // Crea una fila a una tabla html a partir de un vector pasado por parámetro.
   export function crearFilaTablaSimulacion(fila: string[], indicesColor: number[]): string {
+    // Obtenemos el índice de la celda a pintar.
+    let eventos: number[] = [];
+    for (let i: number = 0; i < indicesColor.length; i++) eventos.push(Number(fila[indicesColor[i]]));
+    let eventoMenor: number = Utils.getMenorMayorACero(eventos);
+    let indiceEventoMenor: number;
+    for (let i: number = 0; i < indicesColor.length; i++) {
+      if (Number(fila[indicesColor[i]]) === eventoMenor) indiceEventoMenor = indicesColor[i];
+    }
+
+    // Creamos la fila.
     let filaHTML: string = "<tr>";
     for (let i: number = 0; i < fila.length; i++) {
       let celdaHTML: string = "<td";
-      for (let j: number = 0; j < indicesColor.length; j++) {
-        if (i == indicesColor[j])
-          celdaHTML += ' style="color: red"';
-      }
+      // Pintamos la celda si corresponde.
+      if (i == indiceEventoMenor) celdaHTML += ' style="color: red"';
       celdaHTML += ">";
       const valorCelda: string = !(typeof fila[i] === 'undefined' || fila[i] == 'null' || fila[i] === '-1.0000' || fila[i] === '') ? fila[i] : '-';
       celdaHTML += valorCelda + "</td>";
@@ -42,7 +52,7 @@ export module HTMLUtils {
   }
 
   // Carga de tabla html.
-  export function llenarTablaSimulacion(matriz: any[][], indicesColor: number[], tabla: HTMLTableElement): void {
+  export function llenarTablaSimulacion(matriz: string[][], indicesColor: number[], tabla: HTMLTableElement): void {
     tabla.hidden = true;
     let bodyTabla: string = "";
     for (let i: number = 0; i < matriz.length; i++) {

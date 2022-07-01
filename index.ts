@@ -42,7 +42,7 @@ const btnRK: HTMLButtonElement = document.getElementById('btnRK') as HTMLButtonE
 // Definición de los objetos que realizan la simulación de colas.
 let simulador: Simulador;
 let matrizEstado: string[][];
-let rungeKutta: RungeKutta;
+let rungeKutta: RungeKutta = new RungeKutta();
 
 // Definición de los parámetros.
 let cantEventos: number;
@@ -61,7 +61,6 @@ let tiempoReparacionZapatosB: number;
 
 //Ocultamos la seccion en donde esta la tabla.
 HTMLUtils.ocultarSeccion(divTablaSimulacion);
-HTMLUtils.ocultarSeccion(divRungeKutta);
 
 // Detecta que el valor de la probabilidad de retiro de zapatos es ingresado por teclado y calcula la de pedido.
 txtProbRetiro.addEventListener('input', () => {
@@ -73,28 +72,28 @@ txtProbPedido.addEventListener('input', () => {
   txtProbRetiro.value = (1 - Number(txtProbPedido.value)).toFixed(2);
 });
 
-// Disparamos la simulación.
+// Mostramos la tabla de Runge-Kutta.
+btnRK.addEventListener('click', () => mostrarRK());
+
+const mostrarRK = () => {
+  divRungeKutta.innerHTML = '';
+  divRungeKutta.innerHTML += '<h1 class="text-center">Tabla de Runge-Kutta de tiempo de secado (t = 60 minutos):</h1>';
+  let tiempoSecado: number = rungeKutta.getTiempoSecado(0, 0, 0.001);
+  let tablaRK: number[][] = rungeKutta.getMatrizRK();
+  let tablaRKHTML: string = HTMLUtils.crearTablaRK(tablaRK, 'S');
+  divRungeKutta.innerHTML += tablaRKHTML;
+  divRungeKutta.innerHTML += `
+  <div class="mb-3 mx-3 row justify-content-center text-center">
+  <div class="col-sm-auto alert alert-info mx-2" role="alert">Tiempo secado: ${tiempoSecado.toFixed(2)} minutos</div>
+  </div>`;
+}
+
+// Mostramos la simulación.
 btnSimular.addEventListener('click', () => {
   HTMLUtils.ocultarSeccion(divTablaSimulacion);
   HTMLUtils.ocultarSeccion(divRungeKutta);
   simular();
 });
-
-// Mostramos la tabla de Runge-Kutta.
-btnRK.addEventListener('click', () => {
-  mostrarRK();
-});
-
-
-const mostrarRK = () => {
-  divRungeKutta.innerHTML = '';
-  HTMLUtils.mostrarSeccion(divRungeKutta);
-
-  divRungeKutta.innerHTML += '<h1 class="text-center">Tabla de Runge-Kutta de tiempo de secado:</h1>';
-  let tablaRK: number[][] = rungeKutta.getMatrizRK();
-  let tablaRKHTML: string = HTMLUtils.crearTablaRK(tablaRK, 'S');
-  divRungeKutta.innerHTML += tablaRKHTML;
-}
 
 const simular = () => {
   // Validamos los parámetros ingresados por el usuario.
@@ -170,8 +169,8 @@ function validarParametros(): boolean {
     return false;
   }
 
-  if (mediaLlegadaClientes) {
-    alert('La media de la llegada de clientes no puede ser un valor negativo.');
+  if (mediaLlegadaClientes <= 0) {
+    alert('La media de la llegada de clientes debe ser mayor a cero.');
     return false;
   }
 
@@ -180,7 +179,7 @@ function validarParametros(): boolean {
     return false;
   }
 
-  if (txtTiempoReparacionZapatosA >= txtTiempoReparacionZapatosB) {
+  if (tiempoReparacionZapatosA >= tiempoReparacionZapatosB) {
     alert('El valor de "B" del tiempo de reparación de zapatos debe ser mayor a "A".');
     return false;
   }

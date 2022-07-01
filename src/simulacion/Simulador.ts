@@ -4,6 +4,7 @@ import { TipoEvento } from "../modelo/TipoEvento";
 import { ParZapatos } from "../modelo/ParZapatos";
 import { Utils } from "../utils/Utils";
 import { EstadoCliente } from "../modelo/EstadoCliente";
+import { EstadoParZapatos } from "../modelo/EstadoParZapatos";
 
 export class Simulador {
   private mediaLlegadasClientes: number;
@@ -125,7 +126,6 @@ export class Simulador {
           // Carga de condiciones iniciales.
           for (let i: number = 1; i <= 10; i++) {
             cantZapatosIngresados++;
-            cantZapatosReparados++;
             let parZapatosReparados: ParZapatos = new ParZapatos(i, -1);
             parZapatosReparados.terminarReparacion();
             parZapatosEnSistema.push(parZapatosReparados);
@@ -332,6 +332,12 @@ export class Simulador {
           parZapatosReparado.terminarReparacion();
           colaZapatosListos.push(parZapatosReparado);
 
+          // Actualizamos el acumulador de tiempo de reparación de zapatos.
+          acumuladorTiempoReparacion += reloj - parZapatosReparado.getMinutoLlegada();
+
+          // Actualizamos el contador de zapatos reparados.
+          cantZapatosReparados++;
+
           // Preguntamos si hay zapatos por reparar
           if (colaZapatosListos.length === 0) zapatero.libre();
           else {
@@ -360,10 +366,11 @@ export class Simulador {
 
         // Fin de simulación.
         case TipoEvento.FIN_SIMULACION: {
-          // Calculamos el tiempo de permanencia en el sistema de los pasajeros que quedaron en el sistema.
-          for (let i: number = 0; i < clientesEnSistema.length; i++) {
-            acumuladorTiempoReparacion += reloj - clientesEnSistema[i].getMinutoLlegada();
-          }
+          // Acumulamos los tiempos de atención para los clientes que quedaron en el sistema.
+          //for (let i: number = 0; i < clientesEnSistema.length; i++) {
+          //  acumuladorTiempoReparacion += reloj - clientesEnSistema[i].getMinutoLlegada();
+          //}
+          // Acumulamos los tiempos de reparación para los zapatos que quedaron en el sistema.
           break;
         }
       }
@@ -419,8 +426,8 @@ export class Simulador {
         for (let i: number = 0; i < parZapatosEnSistema.length; i++) {
           evento.push(
             parZapatosEnSistema[i].getId().toString(),
-            EstadoCliente[clientesEnSistema[i].getEstado()],
-            clientesEnSistema[i].getMinutoLlegada().toFixed(4),
+            EstadoParZapatos[parZapatosEnSistema[i].getEstado()],
+            parZapatosEnSistema[i].getMinutoLlegada().toFixed(4),
           );
         }
 
