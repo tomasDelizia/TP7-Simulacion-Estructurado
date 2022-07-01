@@ -25,7 +25,10 @@ export class Simulador {
 
   private limiteColumnasCliente: number = 15;
 
-  private 
+  private tiempoPromedioReparacion: number = 0;
+  private cantMaxZapatosEnColaReparacion: number = 0;
+  private tiempoPromedioAtencion: number = 0;
+  private porcentajeClientesRechazados: number = 0;
 
   public simular(
     cantEventos: number,
@@ -453,6 +456,20 @@ export class Simulador {
 
         // Actualizamos la cantidad máxima de pares de zapatos que hubo en el sistema.
         this.cantMaxParZapatos = Math.max(parZapatosEnSistema.length, this.cantMaxParZapatos);
+
+        // Calculamos las métricas para la última iteración.
+        if (i == cantEventos-1) {
+          if (cantZapatosReparados != 0)
+          this.tiempoPromedioReparacion = acumuladorTiempoReparacion / cantZapatosReparados;
+
+          this.cantMaxZapatosEnColaReparacion = cantMaxZapatosEnColaReparacion;
+
+          if (cantClientesAtendidos != 0)
+          this.tiempoPromedioAtencion = acumuladorTiempoAtencion / cantClientesAtendidos;
+
+          if ((cantClientesAtendidos + cantClientesRechazados) != 0)
+          this.porcentajeClientesRechazados = cantClientesRechazados / (cantClientesAtendidos + cantClientesRechazados) * 100;
+        }
       }
 
       // Reseteamos algunas variables.
@@ -467,6 +484,26 @@ export class Simulador {
       tiempoSecado = -1;
     }
   }
+
+  public getMatrizEstado(): string[][] {
+    return this.matrizEstado;
+}
+
+public getTiempoPromedioReparacion(): number {
+  return this.tiempoPromedioReparacion;
+}
+
+public getCantMaxZapatosEnColaReparacion(): number {
+  return this.cantMaxZapatosEnColaReparacion;
+}
+
+public getTiempoPromedioAtencion(): number {
+  return this.tiempoPromedioAtencion;
+}
+
+public getPorcentajeClientesRechazados(): number {
+  return this.porcentajeClientesRechazados;
+}
   
   // Método que devuelve el evento que sigue, dados los tiempos de los eventos candidatos.
   public getSiguienteEvento(tiemposEventos: number[]): TipoEvento {
@@ -475,10 +512,6 @@ export class Simulador {
       if (tiemposEventos[i] === menor) return TipoEvento[TipoEvento[i+1]];
     }
     return -1;
-  }
-
-  public getMatrizEstado(): string[][] {
-      return this.matrizEstado;
   }
 
   // Devuelve la máxima cantidad de clientes que hubo en algún momento en el sistema para el intervalo de iteraciones a mostrar.

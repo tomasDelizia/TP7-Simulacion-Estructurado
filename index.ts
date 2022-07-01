@@ -129,6 +129,13 @@ const simular = () => {
   HTMLUtils.agregarEncabezados(15, tablaSimulacion, columnasClientes, 'Cliente');
   HTMLUtils.agregarEncabezados(cantMaxParZapatos, tablaSimulacion, columnasParZapatos, 'Par Zapatos');
   HTMLUtils.llenarTablaSimulacion(matrizEstado, indicesEventosCandidatos, tablaSimulacion);
+
+  // Cargamos métricas.
+  alertTiempoPromedioReparacion.innerHTML += simulador.getTiempoPromedioReparacion().toFixed(2) + ' minutos';
+  alertCantMaxColaZapatos.innerHTML += simulador.getCantMaxZapatosEnColaReparacion() + ' zapatos';
+  alertTiempoPromedioAtencionClientes.innerHTML += simulador.getTiempoPromedioAtencion().toFixed(2) + ' minutos';
+  alertPorcentajeClientesRechazados.innerHTML += simulador.getPorcentajeClientesRechazados().toFixed(2) + '%';
+
   console.log(`La renderización tardó ${performance.now() - startTime} milisegundos`);
   HTMLUtils.mostrarSeccion(divTablaSimulacion);
 }
