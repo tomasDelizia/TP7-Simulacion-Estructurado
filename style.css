@@ -20,8 +20,14 @@ body {
 }
 
 
-#tablaSimulacion thead tr th {
-  top: 20px;
+#tablaSimulacion thead tr {
+  top: 0;
   position: sticky;
-  background-color: beige;
+  background-color: burlywood;
+}
+
+#divRungeKutta thead tr {
+  top: 0;
+  position: sticky;
+  background-color: burlywood;
 }

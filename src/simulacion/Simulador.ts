@@ -231,7 +231,8 @@ export class Simulador {
           finAtencion = -1;
 
           // Buscamos el cliente atendido.
-          let clienteAtendido: Cliente = clientesEnSistema.find(cliente => cliente.estaSiendoAtendido());
+          let indiceClienteAtendido: number = clientesEnSistema.findIndex(cliente => cliente.estaSiendoAtendido());
+          let clienteAtendido: Cliente = clientesEnSistema[indiceClienteAtendido];
 
           // Actualizamos el contador de clientes atendidos con éxito y el acumulador de tiempo de atención.
           cantClientesAtendidos++;
@@ -257,6 +258,9 @@ export class Simulador {
               break;
             }
           }
+
+          // Eliminamos al cliente atendido del sistema.
+          clientesEnSistema.splice(indiceClienteAtendido, 1);
 
           // Preguntamos si no hay nadie en la cola.
           if (colaClientes.length === 0) {
@@ -330,15 +334,19 @@ export class Simulador {
           finReparacion = -1;
     
           // Buscamos el par de zapatos que estaba en reparación, le cambiamos el estado y lo agregamos a la cola de zapatos listos para retirar.
-          let parZapatosReparado: ParZapatos = parZapatosEnSistema.find(parZapatos => parZapatos.estaEnReparacion());
+          let indiceParZapatosReparado: number = parZapatosEnSistema.findIndex(parZapatos => parZapatos.estaEnReparacion());
+          let parZapatosReparado: ParZapatos = parZapatosEnSistema[indiceParZapatosReparado];
           parZapatosReparado.terminarReparacion();
           colaZapatosListos.push(parZapatosReparado);
 
-          // Actualizamos el acumulador de tiempo de reparación de zapatos.
-          acumuladorTiempoReparacion += reloj - parZapatosReparado.getMinutoLlegada();
-
-          // Actualizamos el contador de zapatos reparados.
-          cantZapatosReparados++;
+          // Actualizamos el acumulador de tiempo de reparación de zapatos y el contador de zapatos reparados (ignoramos los primeros 10).
+          if (parZapatosReparado.getId() > 10) {
+            acumuladorTiempoReparacion += reloj - parZapatosReparado.getMinutoLlegada();
+            cantZapatosReparados++;
+          }
+          
+          // Eliminamos el par de zapatos reparados del sistema.
+          parZapatosEnSistema.splice(indiceParZapatosReparado, 1);
 
           // Preguntamos si hay zapatos por reparar
           if (colaZapatosAReparar.length === 0) zapatero.libre();
