@@ -92,7 +92,7 @@ export class Simulador {
     // Métricas.
     let acumuladorTiempoReparacion: number = 0;
     let cantZapatosReparados: number = 0;
-    let cantMaxZapatosEnCola: number = 0;
+    let cantMaxZapatosEnColaReparacion: number = 0;
     let acumuladorTiempoAtencion: number = 0;
     let cantClientesAtendidos: number = 0;
     let cantClientesRechazados: number = 0;
@@ -332,6 +332,19 @@ export class Simulador {
           parZapatosReparado.terminarReparacion();
           colaZapatosListos.push(parZapatosReparado);
 
+          // Preguntamos si hay zapatos por reparar
+          if (colaZapatosListos.length === 0) zapatero.libre();
+          else {
+            // Quitamos un par de zapatos de la cola y cambiamos su estado.
+            colaZapatosAReparar.shift().enReparacion();
+            zapatero.reparando();
+            // Calculamos el tiempo de reparación.
+            rndReparacion = Math.random();
+            tiempoReparacion = this.getTiempoReparacion(rndReparacion);
+            tiempoSecado = this.tiempoSecado;
+            finReparacion = tiempoReparacion + tiempoSecado;
+          }
+
           break;
         }
 
@@ -355,11 +368,15 @@ export class Simulador {
         }
       }
 
+      // Comparamos la cantidad de zapatos en la cola de la iteración actual con la cantidad máxima.
+      cantMaxZapatosEnColaReparacion = Math.max(colaZapatosAReparar.length, cantMaxZapatosEnColaReparacion);
+
       // Cargamos la matriz de estado a mostrar solo para el rango pasado por parámetro.
       if ((i >= eventoDesde && i <= indiceHasta) || i == cantEventos-1) {
         evento.push(
           i.toString(),
           TipoEvento[tipoEvento],
+          dia.toString(),
           reloj.toFixed(4),
     
           rndLlegada.toFixed(4),
@@ -384,7 +401,11 @@ export class Simulador {
           colaZapatosListos.length.toString(),
     
           acumuladorTiempoReparacion.toFixed(4),
-          cantZapatosReparados.toString()
+          cantZapatosReparados.toString(),
+          cantMaxZapatosEnColaReparacion.toString(),
+          acumuladorTiempoAtencion.toFixed(4),
+          cantClientesAtendidos.toString(),
+          cantClientesRechazados.toString()
         );
     
         for (let i: number = 0; i < clientesEnSistema.length; i++) {
@@ -405,9 +426,11 @@ export class Simulador {
 
         this.matrizEstado.push(evento);
 
-        // Actualizamos la cantidad de pasajeros máximos que hubo en el sistema.
-        if (clientesEnSistema.length > this.cantMaxClientes)
-          this.cantMaxClientes = clientesEnSistema.length;
+        // Actualizamos la cantidad máxima de pasajeros que hubo en el sistema.
+        this.cantMaxClientes = Math.max(clientesEnSistema.length, this.cantMaxClientes);
+
+        // Actualizamos la cantidad máxima de pares de zapatos que hubo en el sistema.
+        this.cantMaxParZapatos = Math.max(parZapatosEnSistema.length, this.cantMaxParZapatos);
       }
 
       // Reseteamos algunas variables.
