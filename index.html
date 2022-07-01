@@ -134,118 +134,48 @@
             <tr>
               <th rowspan="2">N° Evento</th>
               <th rowspan="2">Evento</th>
+              <th rowspan="2">Día</th>
               <th rowspan="2">Reloj (min.)</th>
-              <th colspan="5">Llegada Bloqueo</th>
-              <th colspan="5">Llegada Pasajero</th>
-              <th colspan="2">Bloqueo Llegada Pasajeros</th>
-              <th colspan="3">Facturación equipaje</th>
-              <th colspan="3">Venta billete</th>
-              <th colspan="4">Chequeo billete</th>
-              <th colspan="2">Bloqueo Chequeo billete</th>
-              <th colspan="3">Control Metales</th>
-              <th colspan="3">Pase entre Venta y Facturación</th>
-              <th colspan="3">Pase entre Facturación y Control</th>
-              <th colspan="3">Pase entre Chequeo y Control</th>
-              <th colspan="3">Pase entre Control y Embarque</th>
-              <th rowspan="2">Cola De Pasajeros Bloqueados en la Entrada</th>
-              <th colspan="2">Empleado Facturación</th>
-              <th colspan="2">Empleado Venta Billete</th>
-              <th colspan="3">Empleado Chequeo Billete</th>
-              <th colspan="2">Empleado Control Metales</th>
-              <th colspan="9">Métricas</th>
+              <th colspan="3">Llegada Cliente</th>
+              <th colspan="5">Fin atención cliente</th>
+              <th colspan="4">Fin reparación par zapatos</th>
+              <th colspan="5">Zapatero</th>
+              <th colspan="6">Métricas</th>
             </tr>
           
-            </tr>  
-              <!-- Tiempo entre Bloqueo -->
-              <th>RND valor beta</th>
-              <th>Tiempo Entre Bloqueos</th>
-              <th style="color: red">Próximo Bloqueo</th>
+            </tr>          
+              <!-- Llegada cliente -->
               <th>RND</th>
-              <th>Objetivo Bloqueo</th>
-            
-              <!-- Tiempo entre llegadas -->
-              <th>RND Tiempo Entre Llegadas</th>
               <th>Tiempo Entre Llegadas</th>
               <th style="color: red">Próxima Llegada</th>
-              <th>RND Tipo Pasajero</th>
-              <th>Tipo Pasajero</th>
-              
-              <!-- Bloqueo llegada -->
-              <th>Tiempo De Bloqueo Llegadas</th>
-              <th style="color: red">Fin Bloqueo Llegadas</th>
 
-              <!-- Tiempo facturación pasajero -->
-              <th>RND Tiempo Facturación</th>
-              <th>Tiempo Facturación</th>
-              <th style="color: red">Fin Facturación</th>
+              <!-- Fin atención cliente -->
+              <th>RND</th>
+              <th>Objetivo Visita</th>
+              <th>RND</th>
+              <th>Tiempo Atención</th>
+              <th style="color: red">Fin Atención</th>
 
-              <!-- Tiempo venta billete -->
-              <th>RND Venta Billete</th>
-              <th>Tiempo Venta Billete</th>
-              <th style="color: red">Fin Venta Billete</th>
+              <!-- Fin reparación par zapatos -->
+              <th>RND</th>
+              <th>Tiempo Reparación</th>
+              <th>Tiempo Secado</th>
+              <th style="color: red">Fin Reparación</th>
 
-              <!-- Tiempo chequeo billete -->
-              <th>RND 1 Chequeo Billete</th>
-              <th>RND 2 Chequeo Billete</th>
-              <th>Tiempo Chequeo Billete</th>
-              <th style="color: red">Fin Chequeo Billete</th>
-
-              <!-- Bloqueo Chequeo -->
-              <th>Tiempo De Bloqueo Chequeo</th>
-              <th style="color: red">Fin Bloqueo Chequeo</th>
-
-              <!-- Tiempo control metales -->
-              <th>RND Control Metales</th>
-              <th>Tiempo Control Metales</th>
-              <th style="color: red">Fin Control Metales</th>
-
-              <!-- Pase de venta a facturacion -->
-              <th>RND Pase Entre Venta y Facturación</th>
-              <th>Tiempo Pase Entre Venta y Facturación</th>
-              <th>Fin Pase Entre Venta y Facturación</th>
-
-              <!-- Pase entre facturacion y control -->
-              <th>RND Pase entre Facturación y Control</th>
-              <th>Tiempo Pase entre Facturación y Control</th>
-              <th>Fin Pase entre Facturación y Control</th>
-
-              <!-- Pase entre chequeo y control -->
-              <th>RND Pase Entre Chequeo y Control</th>
-              <th>Tiempo Pase Entre Chequeo y Control</th>
-              <th>Fin Pase Entre Chequeo y Control</th>
-
-              <!-- Pase entre control y embarque -->
-              <th>RND Pase Entre Control y Embarque</th>
-              <th>Tiempo Pase Entre Control y Embarque</th>
-              <th>Fin Pase Entre Control y Embarque</th>
-
-              <!-- Empleado Facturación -->
-              <th>Estado Empleado</th>
-              <th>Cola Facturacion</th>
-
-              <!-- Empleado Venta Billete -->
-              <th>Estado Empleado</th>
-              <th>Cola Venta</th>
-
-              <!-- Empleado Chequeo Billete -->
-              <th>Estado Empleado</th>
-              <th>Cola Chequeo</th>
-              <th>Tiempo Remanente Chequeo</th>
-
-              <!-- Empleado Control Metales -->
-              <th>Estado Empleado</th>
-              <th>Cola Control</th>
+              <!-- Zapatero -->
+              <th>Estado</th>
+              <th>Cola Clientes</th>
+              <th>Tiempo Remanente Reparación</th>
+              <th>Cola Zapatos a Reparar</th>
+              <th>Cola Zapatos Listos</th>
 
               <!-- Métricas -->
-              <th>Total Pasajeros A</th>
-              <th>Total Pasajeros B</th>
-              <th>Total Pasajeros C</th>
-              <th>Total Pasajeros</th>
-              <th>Acumulador Tiempo Pasajeros en Sistema</th>
-              <th>Acumulador Tiempo Ocioso del Agente de Control</th>
-              <th>Cantidad Pasajeros Atendidos por Empleado Venta</th>
-              <th>Cantidad Máxima de Pasajeros en Alguna Cola</th>
-              <th>Cantidad Máxima Pasajeros en Cola de Control</th>
+              <th>Acumulador Tiempo Reparación</th>
+              <th>Cantidad Zapatos Reparados</th>
+              <th>Cantidad Máxima de Zapatos en Cola de Reparación</th>
+              <th>Acumulador Tiempo Atención de Clientes</th>
+              <th>Cantidad Clientes Atendidos</th>
+              <th>Cantidad Clientes Rechazados</th>
             </tr>
           </thead>
 

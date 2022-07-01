@@ -31,7 +31,7 @@ const divRungeKutta: HTMLDivElement = document.getElementById('divRungeKutta') a
 const tablaSimulacion: HTMLTableElement = document.getElementById('tablaSimulacion') as HTMLTableElement;
 const cantEncabezadosTablaSimulacion = tablaSimulacion.rows[0].cells.length;
 const cantSubEncabezadosTablaSimulacion = tablaSimulacion.rows[1].cells.length;
-const indicesEventosCandidatos: number[] = [5, 10, 14, 17, 20, 24, 26, 29];
+const indicesEventosCandidatos: number[] = [6, 11, 15];
 const columnasClientes: string[] = ['N° Cliente', 'Estado', 'Minuto llegada'];
 const columnasParZapatos: string[] = ['N° Par', 'Estado', 'Minuto llegada'];
 
