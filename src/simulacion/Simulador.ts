@@ -1,5 +1,5 @@
 import { Cliente } from "../modelo/Cliente";
-import { Empleado } from "../modelo/Empleado";
+import { Zapatero } from "../modelo/Zapatero";
 import { TipoEvento } from "../modelo/TipoEvento";
 import { ParZapatos } from "../modelo/ParZapatos";
 import { Utils } from "../utils/Utils";
@@ -55,6 +55,7 @@ export class Simulador {
 
     let tipoEvento: TipoEvento;
     let reloj: number = 0;
+    let dia: number = 1;
 
     // Llegada de un cliente.
     let rndLlegada: number = -1;
@@ -75,7 +76,7 @@ export class Simulador {
     let finReparacion: number = -1;
 
     // Empleado.
-    let empleado = new Empleado();
+    let zapatero = new Zapatero();
     let estaEnHorarioAtencion: boolean = true;
     let colaClientes: Cliente[] = [];
     let tiempoRemanenteReparacion: number = -1;
@@ -153,20 +154,30 @@ export class Simulador {
           switch (objetivoVisita) {
             // Llega un cliente que quiere retirar un par de zapatos reparados.
             case "Retiro": {
-              if (empleado.estaLibre() || empleado.estaReparando()) {
-                if (empleado.estaReparando()) {
-                  // Cálculo del tiempo remanente de reparación.
-                  tiempoRemanenteReparacion = finReparacion - reloj;
-                  finReparacion = -1;
+              // Preguntamos si el zapatero está libre o reparando.
+              if (zapatero.estaParaAtender()) {
+                // Preguntamos si hay zapatos listos para retirar.
+                if (colaZapatosListos.length > 0) {
+                  // Si estaba reparando, deja la reparación pendiente y atiende al cliente.
+                  if (zapatero.estaReparando()) {
+                    tiempoRemanenteReparacion = finReparacion - reloj;
+                    finReparacion = -1;
+                  }
+                  cliente.retirandoZapatos();
+                  zapatero.atendiendo();
+      
+                  // Generamos el tiempo de atención.
+                  rndAtencion = Math.random();
+                  tiempoAtencion = this.getTiempoAtencion(rndAtencion);
+                  finAtencion = (reloj + tiempoAtencion);
                 }
-                cliente.retirandoZapatos();
-                empleado.atendiendo();
-  
-                // Generamos el tiempo de atención.
-                rndAtencion = Math.random();
-                tiempoAtencion = this.getTiempoAtencion(rndAtencion);
-                finAtencion = (reloj + tiempoAtencion);
+                // No hay zapatos listos para retirar, se va.
+                else {
+                  cantClientesRechazados++;
+                  clientesEnSistema.pop();
+                }
               }
+              // Si estaba atendiendo otro cliente, va a la cola.
               else {
                 cliente.enEsperaRetiro();
                 colaClientes.push(cliente);
@@ -174,22 +185,24 @@ export class Simulador {
               break;
             }
   
-            // Llega un cliente que quiere realizar un pedido de reparación de un par de zapato.
+            // Llega un cliente que quiere realizar un pedido de reparación de un par de zapatos.
             case "Pedido": {
-              if (empleado.estaLibre() || empleado.estaReparando()) {
-                if (empleado.estaReparando()) {
-                  // Cálculo del tiempo remanente de reparación.
+              // Preguntamos si el zapatero está libre o reparando.
+              if (zapatero.estaParaAtender()) {
+                // Si estaba reparando, deja la reparación pendiente y atiende al cliente.
+                if (zapatero.estaReparando()) {
                   tiempoRemanenteReparacion = finReparacion - reloj;
                   finReparacion = -1;
                 }
                 cliente.haciendoPedido();
-                empleado.atendiendo();
+                zapatero.atendiendo();
   
                 // Generamos el tiempo de atención.
                 rndAtencion = Math.random();
                 tiempoAtencion = this.getTiempoAtencion(rndAtencion);
                 finAtencion = (reloj + tiempoAtencion);
               }
+              // Si estaba atendiendo otro cliente, va a la cola.
               else {
                 cliente.enEsperaPedido();
                 colaClientes.push(cliente);
@@ -208,10 +221,16 @@ export class Simulador {
           let clienteAtendido: Cliente = clientesEnSistema.find(cliente => cliente.estaSiendoAtendido());
 
           switch (clienteAtendido.getEstado()) {
+            // El cliente siendo atendido estaba retirando un par de zapatos.
             case (EstadoCliente.RETIRANDO_ZAPATOS): {
               break;
             }
+            // El cliente siendo atendido estaba haciendo un pedido de reparación.
             case (EstadoCliente.HACIENDO_PEDIDO): {
+              // Actualizamos el contador de clientes atendidos con éxito.
+              cantClientesAtendidos++;
+
+
               break;
             }
           }
@@ -228,11 +247,11 @@ export class Simulador {
           clienteAtendido.minutoLlegadaDeFacturacionAControl = finPaseEntreFacturacionYControl;
           // Preguntamos si hay alguien en la cola.
           if (colaClientes.length === 0) {
-            empleado.libre();
+            zapatero.libre();
           }
           else {
             // El servidor pasa de ocupado a ocupado.
-            empleado.ocupado();
+            zapatero.ocupado();
             // Quitamos a un pasajero de la cola y cambiamos su estado.
             colaClientes.shift().facturandoEquipaje();
             // Generamos el tiempo de facturación.
@@ -312,7 +331,7 @@ export class Simulador {
           tiempoSecado.toFixed(4),
           finReparacion.toFixed(4),
     
-          empleado.getEstado(),
+          zapatero.getEstado(),
           colaClientes.length.toString(),
           tiempoRemanenteReparacion.toFixed(4),
           colaZapatosAReparar.length.toString(),
