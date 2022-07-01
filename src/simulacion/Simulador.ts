@@ -291,10 +291,32 @@ export class Simulador {
             switch (clientePorAtender.getEstado()) {
               // El cliente estaba esperando retirar un par de zapatos.
               case (EstadoCliente.ESPERANDO_RETIRO): {
+                // Preguntamos si hay zapatos listos para retirar.
+                if (colaZapatosListos.length > 0) {
+                  clientePorAtender.retirandoZapatos();
+      
+                  // Generamos el tiempo de atención.
+                  rndAtencion = Math.random();
+                  tiempoAtencion = this.getTiempoAtencion(rndAtencion);
+                  finAtencion = (reloj + tiempoAtencion);
+                }
+                // No hay zapatos listos para retirar, se va.
+                else {
+                  cantClientesRechazados++;
+                  let indiceClienteAEliminar: number = clientesEnSistema.findIndex(cliente => cliente === clientePorAtender);
+                  clientesEnSistema.splice(indiceClienteAEliminar, 1);
+                }
                 break;
               }
-              // El ciente estaba esperando hacer un pedido de zapatos.
+              // El cliente estaba esperando hacer un pedido de zapatos.
               case (EstadoCliente.ESPERANDO_HACER_PEDIDO): {
+                cliente.haciendoPedido();
+                zapatero.atendiendo();
+  
+                // Generamos el tiempo de atención.
+                rndAtencion = Math.random();
+                tiempoAtencion = this.getTiempoAtencion(rndAtencion);
+                finAtencion = (reloj + tiempoAtencion);
                 break;
               }
             }
