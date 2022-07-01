@@ -15,10 +15,13 @@ body {
   overflow: scroll;
 }
 
+.table th {
+  text-align: center;
+}
 
-/*
-#tablaSimulacion thead tr th{
+
+#tablaSimulacion thead tr th {
   top: 20px;
   position: sticky;
+  background-color: beige;
 }
-*/

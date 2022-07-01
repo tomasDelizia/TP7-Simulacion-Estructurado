@@ -23,6 +23,8 @@ export class Simulador {
   
   private probObjetivosVisita: number[];
 
+  private limiteColumnasCliente: number = 15;
+
   public simular(
     cantEventos: number,
     eventoDesde: number,
@@ -339,7 +341,7 @@ export class Simulador {
           cantZapatosReparados++;
 
           // Preguntamos si hay zapatos por reparar
-          if (colaZapatosListos.length === 0) zapatero.libre();
+          if (colaZapatosAReparar.length === 0) zapatero.libre();
           else {
             // Quitamos un par de zapatos de la cola y cambiamos su estado.
             colaZapatosAReparar.shift().enReparacion();
@@ -414,13 +416,19 @@ export class Simulador {
           cantClientesAtendidos.toString(),
           cantClientesRechazados.toString()
         );
-    
+
         for (let i: number = 0; i < clientesEnSistema.length; i++) {
           evento.push(
             clientesEnSistema[i].getId().toString(),
             EstadoCliente[clientesEnSistema[i].getEstado()],
             clientesEnSistema[i].getMinutoLlegada().toFixed(4),
           );
+        }
+
+        // Evitamos que los zapatos queden bajo los encabezados de las columnas de clientes.
+        if (clientesEnSistema.length < this.limiteColumnasCliente) {
+          let celdasVacias: number = (this.limiteColumnasCliente - clientesEnSistema.length) * 3;
+          for (let i: number = 0; i < celdasVacias; i++) evento.push('-');
         }
 
         for (let i: number = 0; i < parZapatosEnSistema.length; i++) {

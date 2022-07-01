@@ -120,13 +120,13 @@ const simular = () => {
   console.log(`La simulación tardó ${performance.now() - startTime} milisegundos`);
 
   matrizEstado = simulador.getMatrizEstado();
-  let cantMaxClientes: number = simulador.getCantMaxClientes();
+  // let cantMaxClientes: number = simulador.getCantMaxClientes();
   let cantMaxParZapatos: number = simulador.getCantMaxParZapatos();
 
   // Cargamos la tabla a mostrar.
   startTime = performance.now();
-  HTMLUtils.agregarEncabezados(cantMaxClientes, tablaSimulacion, columnasClientes);
-  HTMLUtils.agregarEncabezados(cantMaxParZapatos, tablaSimulacion, columnasParZapatos);
+  HTMLUtils.agregarEncabezados(15, tablaSimulacion, columnasClientes, 'Cliente');
+  HTMLUtils.agregarEncabezados(cantMaxParZapatos, tablaSimulacion, columnasParZapatos, 'Par Zapatos');
   HTMLUtils.llenarTablaSimulacion(matrizEstado, indicesEventosCandidatos, tablaSimulacion);
   console.log(`La renderización tardó ${performance.now() - startTime} milisegundos`);
   HTMLUtils.mostrarSeccion(divTablaSimulacion);

@@ -64,7 +64,7 @@ export module HTMLUtils {
   }
 
   // Añade encabezados a la tabla según la cantidad de clientes.
-  export function agregarEncabezados(cantidad: number, tabla: HTMLTableElement, columnas: string[]): void {
+  export function agregarEncabezados(cantidad: number, tabla: HTMLTableElement, columnas: string[], tipo: string): void {
     let encabezados: HTMLTableRowElement = tabla.rows[0];
     let subEncabezados: HTMLTableRowElement = tabla.rows[1];
 
@@ -72,7 +72,7 @@ export module HTMLUtils {
       let col: HTMLTableHeaderCellElement = encabezados.insertCell();
       col.colSpan = columnas.length;
       col.style.fontWeight = "bold";
-      col.appendChild(document.createTextNode('N° ' + (i+1)));
+      col.appendChild(document.createTextNode(tipo + ' N° ' + (i+1)));
 
       for (let j: number = 0; j < columnas.length; j++) {
         let subCol: HTMLTableHeaderCellElement = subEncabezados.insertCell();
