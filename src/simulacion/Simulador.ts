@@ -220,17 +220,25 @@ export class Simulador {
           // Buscamos el cliente atendido.
           let clienteAtendido: Cliente = clientesEnSistema.find(cliente => cliente.estaSiendoAtendido());
 
+          // Actualizamos el contador de clientes atendidos con éxito y el acumulador de tiempo de atención.
+          cantClientesAtendidos++;
+          acumuladorTiempoAtencion += reloj - clienteAtendido.getMinutoLlegada();
+
           switch (clienteAtendido.getEstado()) {
             // El cliente siendo atendido estaba retirando un par de zapatos.
             case (EstadoCliente.RETIRANDO_ZAPATOS): {
+              // Quitamos un par de zapatos listos de la cola y del sistema.
+              let parZapatosARetirar: ParZapatos = colaZapatosListos.shift();
+              let indiceZapatos: number = parZapatosEnSistema.findIndex(zapatos => zapatos === parZapatosARetirar);
+              parZapatosEnSistema.splice(indiceZapatos, 1);
               break;
             }
             // El cliente siendo atendido estaba haciendo un pedido de reparación.
             case (EstadoCliente.HACIENDO_PEDIDO): {
-              // Actualizamos el contador de clientes atendidos con éxito.
-              cantClientesAtendidos++;
-
-
+              // Ingresa un nuevo par de zapatos al sistema.
+              cantZapatosIngresados++;
+              let nuevoParZapatos: ParZapatos = new ParZapatos(cantZapatosIngresados, reloj);
+              parZapatosEnSistema.push(nuevoParZapatos);
               break;
             }
           }
