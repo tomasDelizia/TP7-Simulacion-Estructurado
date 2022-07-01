@@ -127,6 +127,7 @@ export class Simulador {
             cantZapatosIngresados++;
             cantZapatosReparados++;
             let parZapatosReparados: ParZapatos = new ParZapatos(i, -1);
+            parZapatosReparados.terminarReparacion();
             parZapatosEnSistema.push(parZapatosReparados);
             colaZapatosListos.push(parZapatosReparados);
           }
@@ -160,8 +161,13 @@ export class Simulador {
                 if (colaZapatosListos.length > 0) {
                   // Si estaba reparando, deja la reparación pendiente y atiende al cliente.
                   if (zapatero.estaReparando()) {
+                    // Cálculo del tiempo remanente de reparación.
                     tiempoRemanenteReparacion = finReparacion - reloj;
                     finReparacion = -1;
+
+                    // Buscamos el par de zapatos que estaba siendo reparado, y actualizamos su estado.
+                    let parZapatosAPausar: ParZapatos = parZapatosEnSistema.find(parZapatos => parZapatos.enReparacion());
+                    parZapatosAPausar.pausarReparacion();
                   }
                   cliente.retirandoZapatos();
                   zapatero.atendiendo();
@@ -191,8 +197,13 @@ export class Simulador {
               if (zapatero.estaParaAtender()) {
                 // Si estaba reparando, deja la reparación pendiente y atiende al cliente.
                 if (zapatero.estaReparando()) {
+                  // Cálculo del tiempo remanente de reparación.
                   tiempoRemanenteReparacion = finReparacion - reloj;
                   finReparacion = -1;
+
+                  // Buscamos el par de zapatos que estaba siendo reparado, y actualizamos su estado.
+                  let parZapatosAPausar: ParZapatos = parZapatosEnSistema.find(parZapatos => parZapatos.enReparacion());
+                  parZapatosAPausar.pausarReparacion();
                 }
                 cliente.haciendoPedido();
                 zapatero.atendiendo();
@@ -229,7 +240,7 @@ export class Simulador {
             case (EstadoCliente.RETIRANDO_ZAPATOS): {
               // Quitamos un par de zapatos listos de la cola y del sistema.
               let parZapatosARetirar: ParZapatos = colaZapatosListos.shift();
-              let indiceZapatos: number = parZapatosEnSistema.findIndex(zapatos => zapatos === parZapatosARetirar);
+              let indiceZapatos: number = parZapatosEnSistema.findIndex(parZapatos => parZapatos === parZapatosARetirar);
               parZapatosEnSistema.splice(indiceZapatos, 1);
               break;
             }
@@ -238,7 +249,9 @@ export class Simulador {
               // Ingresa un nuevo par de zapatos al sistema.
               cantZapatosIngresados++;
               let nuevoParZapatos: ParZapatos = new ParZapatos(cantZapatosIngresados, reloj);
+              nuevoParZapatos.esperandoReparacion();
               parZapatosEnSistema.push(nuevoParZapatos);
+              colaZapatosAReparar.push(nuevoParZapatos);
               break;
             }
           }
