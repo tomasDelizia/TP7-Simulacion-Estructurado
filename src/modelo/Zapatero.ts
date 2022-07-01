@@ -2,9 +2,23 @@ import { EstadoZapatero } from "./EstadoZapatero";
 
 export class Zapatero {
   private estado: EstadoZapatero;
+  private recibePedidos: boolean;
 
   constructor() {
     this.estado = EstadoZapatero.LIBRE;
+    this.recibePedidos = true;
+  }
+
+  public detenerRecepcionPedidos(): void {
+    this.recibePedidos = false;
+  }
+
+  public habilitarRecepcionPedidos(): void {
+    this.recibePedidos = true;
+  }
+
+  public estaRecibiendoPedidos(): boolean {
+    return this.recibePedidos;
   }
 
   public libre(): void {

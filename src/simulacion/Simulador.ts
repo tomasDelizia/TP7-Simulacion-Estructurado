@@ -85,7 +85,6 @@ export class Simulador {
 
     // Empleado.
     let zapatero = new Zapatero();
-    let estaEnHorarioAtencion: boolean = true;
     let colaClientes: Cliente[] = [];
     let tiempoRemanenteReparacion: number = -1;
     let colaZapatosAReparar: ParZapatos[] = [];
@@ -109,9 +108,19 @@ export class Simulador {
 
     for (let i: number = 0; i < cantEventos; i++) {
       evento = [];
-      // Determinamos el tipo de evento.
+      // El evento es el inicio de la simulación.
       if (i == 0) tipoEvento = TipoEvento.INICIO_SIMULACION;
+      // El evento es el fin de la simulación.
       else if (i == cantEventos - 1) tipoEvento = TipoEvento.FIN_SIMULACION;
+      // El evento es un fin de recepción de pedidos: todos los días a las 16hs.
+      else if (reloj >= 480 && zapatero.estaRecibiendoPedidos()) tipoEvento = TipoEvento.FIN_RECEPCION_PEDIDOS;
+      // El evento es un fin de jornada: no se reciben pedidos y ya no hay zapatos para reparar.
+      else if (!zapatero.estaRecibiendoPedidos() && colaZapatosAReparar.length === 0 && colaZapatosListos.length === 0) {
+        tipoEvento = TipoEvento.FIN_JORNADA;
+        
+      }
+      // Si el evento anterior fue un fin de jornada, el siguiente es un inicio de jornada.
+      else if (tipoEvento === TipoEvento.FIN_JORNADA) tipoEvento = TipoEvento.INICIO_JORNADA;
       else {
         let eventosCandidatos: number[] = [
           proximaLlegada,
@@ -200,8 +209,8 @@ export class Simulador {
   
             // Llega un cliente que quiere realizar un pedido de reparación de un par de zapatos.
             case "Pedido": {
-              // Preguntamos si el zapatero está libre o reparando.
-              if (zapatero.estaParaAtender()) {
+              // Preguntamos si el zapatero está libre o reparando, y si está recibiendo pedidos.
+              if (zapatero.estaParaAtender() && zapatero.estaRecibiendoPedidos()) {
                 // Si estaba reparando, deja la reparación pendiente y atiende al cliente.
                 if (zapatero.estaReparando()) {
                   // Cálculo del tiempo remanente de reparación.
@@ -221,9 +230,13 @@ export class Simulador {
                 finAtencion = reloj + tiempoAtencion;
               }
               // Si estaba atendiendo otro cliente, va a la cola.
-              else {
+              else if (zapatero.estaAtendiendo()) {
                 cliente.enEsperaPedido();
                 colaClientes.push(cliente);
+              }
+              // No está recibiendo pedidos, se va del sistema.
+              else {
+                clientesEnSistema.pop();
               }
               break;
             }
@@ -368,11 +381,15 @@ export class Simulador {
 
         // Fin de recepción pedidos.
         case TipoEvento.FIN_RECEPCION_PEDIDOS: {
+          zapatero.detenerRecepcionPedidos();
           break;
         }
 
-        // Fin de recepción pedidos.
-        case TipoEvento.INICIO_RECEPCION_PEDIDOS: {
+        // Inicio de una nueva jornada a las 8hs.
+        case TipoEvento.INICIO_JORNADA: {
+          dia++;
+          reloj = 0;
+          zapatero.habilitarRecepcionPedidos();
           break;
         }
 
@@ -414,6 +431,7 @@ export class Simulador {
           finReparacion.toFixed(4),
     
           zapatero.getEstado(),
+          zapatero.estaRecibiendoPedidos() ? 'Sí' : 'No',
           colaClientes.length.toString(),
           tiempoRemanenteReparacion.toFixed(4),
           colaZapatosAReparar.length.toString(),
