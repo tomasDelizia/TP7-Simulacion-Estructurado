@@ -256,29 +256,48 @@ export class Simulador {
             }
           }
 
-          // Verificamos si había un par de zapatos siendo reparado antes de que llegue el cliente.
-          let parZapatosEnPausa: ParZapatos = parZapatosEnSistema.find(parZapatos => parZapatos.estaPausadoEnReparacion());
-
-          // Se genera el tiempo que tardará el pasajero atendido en pasar a la zona de control de metales.
-          rndPaseEntreFacturacionYControl = Math.random();
-          tiempoPaseEntreFacturacionYControl = this.getTiempoPasoEntreZonas(rndPaseEntreFacturacionYControl);
-          finPaseEntreFacturacionYControl = (reloj + tiempoPaseEntreFacturacionYControl);
-          
-          clienteAtendido.pasandoDeFacturacionAControl();
-          clienteAtendido.minutoLlegadaDeFacturacionAControl = finPaseEntreFacturacionYControl;
-          // Preguntamos si hay alguien en la cola.
+          // Preguntamos si no hay nadie en la cola.
           if (colaClientes.length === 0) {
-            zapatero.libre();
+            // Verificamos si había un par de zapatos siendo reparado antes de que llegara el cliente.
+            let parZapatosEnPausa: ParZapatos = parZapatosEnSistema.find(parZapatos => parZapatos.estaPausadoEnReparacion());
+            // Si existe, reaunudamos la reparación.
+            if (parZapatosEnPausa != null) {
+              finReparacion = reloj + tiempoRemanenteReparacion;
+              tiempoRemanenteReparacion = -1;
+              parZapatosEnPausa.enReparacion();
+              zapatero.reparando();
+            }
+            else {
+              // Si no, preguntamos si hay zapatos por reparar.
+              if (colaZapatosAReparar.length === 0) zapatero.libre();
+              else {
+                // Quitamos un par de zapatos de la cola y cambiamos su estado.
+                colaZapatosAReparar.shift().enReparacion();
+                zapatero.reparando();
+                // Calculamos el tiempo de reparación.
+                rndReparacion = Math.random();
+                tiempoReparacion = this.getTiempoReparacion(rndReparacion);
+                tiempoSecado = this.tiempoSecado;
+                finReparacion = tiempoReparacion + tiempoSecado;
+              }
+            } 
           }
+          // Hay clientes en la cola para atender aún.
           else {
-            // El servidor pasa de ocupado a ocupado.
-            zapatero.ocupado();
-            // Quitamos a un pasajero de la cola y cambiamos su estado.
-            colaClientes.shift().facturandoEquipaje();
-            // Generamos el tiempo de facturación.
-            rndAtencion = Math.random();
-            tiempoAtencion = this.getTiempoReparacion(rndAtencion);
-            finAtencion = (reloj + tiempoAtencion);
+            // El zapatero pasa de ocupado a ocupado.
+            zapatero.atendiendo();
+            // Quitamos un cliente de la cola y cambiamos su estado, según su estado actual.
+            let clientePorAtender: Cliente = colaClientes.shift();
+            switch (clientePorAtender.getEstado()) {
+              // El cliente estaba esperando retirar un par de zapatos.
+              case (EstadoCliente.ESPERANDO_RETIRO): {
+                break;
+              }
+              // El ciente estaba esperando hacer un pedido de zapatos.
+              case (EstadoCliente.ESPERANDO_HACER_PEDIDO): {
+                break;
+              }
+            }
           }
           break;
         }
