@@ -25,6 +25,8 @@ export class Simulador {
 
   private limiteColumnasCliente: number = 15;
 
+  private 
+
   public simular(
     cantEventos: number,
     eventoDesde: number,
@@ -284,7 +286,7 @@ export class Simulador {
                 rndReparacion = Math.random();
                 tiempoReparacion = this.getTiempoReparacion(rndReparacion);
                 tiempoSecado = this.tiempoSecado;
-                finReparacion = tiempoReparacion + tiempoSecado;
+                finReparacion = reloj + tiempoReparacion + tiempoSecado;
               }
             } 
           }
@@ -344,9 +346,6 @@ export class Simulador {
             acumuladorTiempoReparacion += reloj - parZapatosReparado.getMinutoLlegada();
             cantZapatosReparados++;
           }
-          
-          // Eliminamos el par de zapatos reparados del sistema.
-          parZapatosEnSistema.splice(indiceParZapatosReparado, 1);
 
           // Preguntamos si hay zapatos por reparar
           if (colaZapatosAReparar.length === 0) zapatero.libre();
@@ -358,7 +357,7 @@ export class Simulador {
             rndReparacion = Math.random();
             tiempoReparacion = this.getTiempoReparacion(rndReparacion);
             tiempoSecado = this.tiempoSecado;
-            finReparacion = tiempoReparacion + tiempoSecado;
+            finReparacion = reloj + tiempoReparacion + tiempoSecado;
           }
 
           break;

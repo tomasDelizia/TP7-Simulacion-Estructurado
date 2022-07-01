@@ -76,6 +76,7 @@ txtProbPedido.addEventListener('input', () => {
 btnRK.addEventListener('click', () => mostrarRK());
 
 const mostrarRK = () => {
+  HTMLUtils.mostrarSeccion(divRungeKutta);
   divRungeKutta.innerHTML = '';
   divRungeKutta.innerHTML += '<h1 class="text-center">Tabla de Runge-Kutta de tiempo de secado (t = 60 minutos):</h1>';
   let tiempoSecado: number = rungeKutta.getTiempoSecado(0, 0, 0.001);
