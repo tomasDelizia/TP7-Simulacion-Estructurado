@@ -115,7 +115,7 @@ export class Simulador {
       // El evento es un fin de recepción de pedidos: todos los días a las 16hs.
       else if (reloj >= 480 && zapatero.estaRecibiendoPedidos()) tipoEvento = TipoEvento.FIN_RECEPCION_PEDIDOS;
       // El evento es un inicio de jornada: no se reciben pedidos y ya no hay zapatos para reparar, así que comienza un nuevo día a las 8hs.
-      else if (!zapatero.estaRecibiendoPedidos() && colaZapatosAReparar.length === 0 && colaZapatosListos.length === 0) tipoEvento = TipoEvento.INICIO_JORNADA;
+      else if (!zapatero.estaRecibiendoPedidos() && zapatero.estaLibre()) tipoEvento = TipoEvento.INICIO_JORNADA;
       else {
         let eventosCandidatos: number[] = [
           proximaLlegada,
@@ -322,20 +322,48 @@ export class Simulador {
                 }
                 // No hay zapatos listos para retirar, se va.
                 else {
-                  cantClientesRechazados++;
-                  let indiceClienteAEliminar: number = clientesEnSistema.findIndex(cliente => cliente === clientePorAtender);
-                  clientesEnSistema.splice(indiceClienteAEliminar, 1);
+                  //cantClientesRechazados++;
+                  //let indiceClienteAEliminar: number = clientesEnSistema.findIndex(cliente => cliente === clientePorAtender);
+                  //clientesEnSistema.splice(indiceClienteAEliminar, 1);
+
+                  // Mientras haya clientes que estén esperando retirar zapatos y no haya zapatos listos, los quitamos del sistema.
+                  while (colaClientes.length > 0 && clientePorAtender.estaEsperandoRetirarPedido()) {
+                    cantClientesRechazados++;
+                    let indiceClienteAEliminar: number = clientesEnSistema.findIndex(cliente => cliente === clientePorAtender);
+                    clientesEnSistema.splice(indiceClienteAEliminar, 1);
+                    clientePorAtender = colaClientes.shift();
+
+                    // Se quita un cliente que estaba esperando hacer un pedido.
+                    if (clientePorAtender.estaEsperandoHacerPedido()) {
+                      clientePorAtender.haciendoPedido();
+  
+                      // Generamos el tiempo de atención.
+                      rndAtencion = Math.random();
+                      tiempoAtencion = this.getTiempoAtencion(rndAtencion);
+                      finAtencion = reloj + tiempoAtencion;
+                      break;
+                    }
+                  }
                 }
                 break;
               }
               // El cliente estaba esperando hacer un pedido de zapatos.
               case (EstadoCliente.ESPERANDO_HACER_PEDIDO): {
-                clientePorAtender.haciendoPedido();
+                // Preguntamos si el zapatero está recibiendo pedidos.
+                if (zapatero.estaRecibiendoPedidos()) {
+                  clientePorAtender.haciendoPedido();
   
-                // Generamos el tiempo de atención.
-                rndAtencion = Math.random();
-                tiempoAtencion = this.getTiempoAtencion(rndAtencion);
-                finAtencion = reloj + tiempoAtencion;
+                  // Generamos el tiempo de atención.
+                  rndAtencion = Math.random();
+                  tiempoAtencion = this.getTiempoAtencion(rndAtencion);
+                  finAtencion = reloj + tiempoAtencion;
+                }
+                // No está recibiendo pedidos, se va del sistema.
+                else {
+                  cantClientesRechazados++;
+                  let indiceClienteAEliminar: number = clientesEnSistema.findIndex(cliente => cliente === clientePorAtender);
+                  clientesEnSistema.splice(indiceClienteAEliminar, 1);
+                }
                 break;
               }
             }

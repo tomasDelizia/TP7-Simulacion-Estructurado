@@ -30,6 +30,14 @@ export class Cliente {
     return (this.estado === EstadoCliente.HACIENDO_PEDIDO || this.estado === EstadoCliente.RETIRANDO_ZAPATOS);
   }
 
+  public estaEsperandoHacerPedido(): boolean {
+    return this.estado === EstadoCliente.ESPERANDO_HACER_PEDIDO;
+  }
+
+  public estaEsperandoRetirarPedido(): boolean {
+    return this.estado === EstadoCliente.ESPERANDO_RETIRO;
+  }
+
   public getEstado(): EstadoCliente {
     return this.estado;
   }
