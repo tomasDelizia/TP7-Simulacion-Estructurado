@@ -114,13 +114,8 @@ export class Simulador {
       else if (i == cantEventos - 1) tipoEvento = TipoEvento.FIN_SIMULACION;
       // El evento es un fin de recepción de pedidos: todos los días a las 16hs.
       else if (reloj >= 480 && zapatero.estaRecibiendoPedidos()) tipoEvento = TipoEvento.FIN_RECEPCION_PEDIDOS;
-      // El evento es un fin de jornada: no se reciben pedidos y ya no hay zapatos para reparar.
-      else if (!zapatero.estaRecibiendoPedidos() && colaZapatosAReparar.length === 0 && colaZapatosListos.length === 0) {
-        tipoEvento = TipoEvento.FIN_JORNADA;
-        
-      }
-      // Si el evento anterior fue un fin de jornada, el siguiente es un inicio de jornada.
-      else if (tipoEvento === TipoEvento.FIN_JORNADA) tipoEvento = TipoEvento.INICIO_JORNADA;
+      // El evento es un inicio de jornada: no se reciben pedidos y ya no hay zapatos para reparar, así que comienza un nuevo día a las 8hs.
+      else if (!zapatero.estaRecibiendoPedidos() && colaZapatosAReparar.length === 0 && colaZapatosListos.length === 0) tipoEvento = TipoEvento.INICIO_JORNADA;
       else {
         let eventosCandidatos: number[] = [
           proximaLlegada,
@@ -236,6 +231,7 @@ export class Simulador {
               }
               // No está recibiendo pedidos, se va del sistema.
               else {
+                cantClientesRechazados++;
                 clientesEnSistema.pop();
               }
               break;
@@ -390,15 +386,20 @@ export class Simulador {
           dia++;
           reloj = 0;
           zapatero.habilitarRecepcionPedidos();
+
+          // Cálculo de la próxima llegada.
+          rndLlegada = Math.random();
+          tiempoEntreLlegadas = this.getTiempoEntreLlegadas(rndLlegada);
+          proximaLlegada = (reloj + tiempoEntreLlegadas);
           break;
         }
 
         // Fin de simulación.
         case TipoEvento.FIN_SIMULACION: {
           // Acumulamos los tiempos de atención para los clientes que quedaron en el sistema.
-          //for (let i: number = 0; i < clientesEnSistema.length; i++) {
-          //  acumuladorTiempoReparacion += reloj - clientesEnSistema[i].getMinutoLlegada();
-          //}
+          for (let i: number = 0; i < clientesEnSistema.length; i++) {
+            acumuladorTiempoAtencion += reloj - clientesEnSistema[i].getMinutoLlegada();
+          }
           // Acumulamos los tiempos de reparación para los zapatos que quedaron en el sistema.
           break;
         }
@@ -413,34 +414,34 @@ export class Simulador {
           i.toString(),
           TipoEvento[tipoEvento],
           dia.toString(),
-          reloj.toFixed(4),
+          reloj.toFixed(2),
     
-          rndLlegada.toFixed(4),
-          tiempoEntreLlegadas.toFixed(4),
-          proximaLlegada.toFixed(4),
+          rndLlegada.toFixed(2),
+          tiempoEntreLlegadas.toFixed(2),
+          proximaLlegada.toFixed(2),
 
-          rndObjetivoVisita.toFixed(4),
+          rndObjetivoVisita.toFixed(2),
           objetivoVisita,
-          rndAtencion.toFixed(4),
-          tiempoAtencion.toFixed(4),
-          finAtencion.toFixed(4),
+          rndAtencion.toFixed(2),
+          tiempoAtencion.toFixed(2),
+          finAtencion.toFixed(2),
     
-          rndReparacion.toFixed(4),
-          tiempoReparacion.toFixed(4),
-          tiempoSecado.toFixed(4),
-          finReparacion.toFixed(4),
+          rndReparacion.toFixed(2),
+          tiempoReparacion.toFixed(2),
+          tiempoSecado.toFixed(2),
+          finReparacion.toFixed(2),
     
           zapatero.getEstado(),
           zapatero.estaRecibiendoPedidos() ? 'Sí' : 'No',
           colaClientes.length.toString(),
-          tiempoRemanenteReparacion.toFixed(4),
+          tiempoRemanenteReparacion.toFixed(2),
           colaZapatosAReparar.length.toString(),
           colaZapatosListos.length.toString(),
     
-          acumuladorTiempoReparacion.toFixed(4),
+          acumuladorTiempoReparacion.toFixed(2),
           cantZapatosReparados.toString(),
           cantMaxZapatosEnColaReparacion.toString(),
-          acumuladorTiempoAtencion.toFixed(4),
+          acumuladorTiempoAtencion.toFixed(2),
           cantClientesAtendidos.toString(),
           cantClientesRechazados.toString()
         );
@@ -449,7 +450,7 @@ export class Simulador {
           evento.push(
             clientesEnSistema[i].getId().toString(),
             EstadoCliente[clientesEnSistema[i].getEstado()],
-            clientesEnSistema[i].getMinutoLlegada().toFixed(4),
+            clientesEnSistema[i].getMinutoLlegada().toFixed(2),
           );
         }
 
@@ -463,7 +464,7 @@ export class Simulador {
           evento.push(
             parZapatosEnSistema[i].getId().toString(),
             EstadoParZapatos[parZapatosEnSistema[i].getEstado()],
-            parZapatosEnSistema[i].getMinutoLlegada().toFixed(4),
+            parZapatosEnSistema[i].getMinutoLlegada().toFixed(2),
           );
         }
 
