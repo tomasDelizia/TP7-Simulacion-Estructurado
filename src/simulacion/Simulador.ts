@@ -225,7 +225,7 @@ export class Simulador {
                 finAtencion = reloj + tiempoAtencion;
               }
               // Si estaba atendiendo otro cliente, va a la cola.
-              else if (zapatero.estaAtendiendo()) {
+              else if (zapatero.estaAtendiendo() && zapatero.estaRecibiendoPedidos()) {
                 cliente.enEsperaPedido();
                 colaClientes.push(cliente);
               }
