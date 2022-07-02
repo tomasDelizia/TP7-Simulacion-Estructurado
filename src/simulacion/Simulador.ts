@@ -68,6 +68,7 @@ export class Simulador {
 
     let tipoEvento: TipoEvento;
     let reloj: number = 0;
+    let relojHoras: Date = new Date();
     let dia: number = 1;
 
     // Llegada de un cliente.
@@ -134,13 +135,19 @@ export class Simulador {
       // El evento es un fin de recepción de pedidos: todos los días a las 16hs.
       if (reloj >= 480 && zapatero.estaRecibiendoPedidos()) tipoEvento = TipoEvento.FIN_RECEPCION_PEDIDOS;
 
+      // Actualizamos el reloj en formato hh:mm:ss
+      relojHoras.setHours(8, reloj, (reloj - Math.trunc(reloj)) * 60);
+
       switch (tipoEvento) {
         // Inicio de la simulación.
         case TipoEvento.INICIO_SIMULACION: {
+          // El reloj inicia a las 8hs.
+          relojHoras.setHours(8, 0, 0);
+
           // Cálculo de la próxima llegada.
           rndLlegada = Math.random();
           tiempoEntreLlegadas = this.getTiempoEntreLlegadas(rndLlegada);
-          proximaLlegada = (reloj + tiempoEntreLlegadas);
+          proximaLlegada = reloj + tiempoEntreLlegadas;
 
           // Carga de condiciones iniciales.
           for (let i: number = 1; i <= 10; i++) {
@@ -158,7 +165,7 @@ export class Simulador {
           // Generamos la llegada del próximo cliente.
           rndLlegada = Math.random();
           tiempoEntreLlegadas = this.getTiempoEntreLlegadas(rndLlegada);
-          proximaLlegada = (reloj + tiempoEntreLlegadas);
+          proximaLlegada = reloj + tiempoEntreLlegadas;
           
           // Obtenemos el objetivo de la visita.
           rndObjetivoVisita = Math.random();
@@ -377,6 +384,7 @@ export class Simulador {
         // Fin de recepción pedidos.
         case TipoEvento.FIN_RECEPCION_PEDIDOS: {
           reloj = 480;
+          relojHoras.setHours(16, 0, 0);
           zapatero.detenerRecepcionPedidos();
           break;
         }
@@ -385,12 +393,13 @@ export class Simulador {
         case TipoEvento.INICIO_JORNADA: {
           dia++;
           reloj = 0;
+          relojHoras.setHours(8, 0, 0);
           zapatero.habilitarRecepcionPedidos();
 
           // Cálculo de la próxima llegada.
           rndLlegada = Math.random();
           tiempoEntreLlegadas = this.getTiempoEntreLlegadas(rndLlegada);
-          proximaLlegada = (reloj + tiempoEntreLlegadas);
+          proximaLlegada = reloj + tiempoEntreLlegadas;
           break;
         }
 
@@ -417,6 +426,7 @@ export class Simulador {
           TipoEvento[tipoEvento],
           dia.toString(),
           reloj.toFixed(2),
+          relojHoras.toTimeString().substring(0,8),
     
           rndLlegada.toFixed(2),
           tiempoEntreLlegadas.toFixed(2),

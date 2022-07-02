@@ -111,7 +111,7 @@ const simular = () => {
   alertPorcentajeClientesRechazados.innerHTML = 'Porcentaje de Clientes Rechazados: ';
   alertCantMaxColaClientes.innerHTML = 'Cantidad Máxima de Clientes en la Cola: ';
 
-  var startTime = performance.now();
+  let startTime: number = performance.now();
   HTMLUtils.limpiarTablaSimulacion(tablaSimulacion, cantEncabezadosTablaSimulacion, cantSubEncabezadosTablaSimulacion);
   console.log(`La limpieza tardó ${performance.now() - startTime} milisegundos`);
 
