@@ -27,6 +27,7 @@ export class Simulador {
 
   private tiempoPromedioReparacion: number = 0;
   private cantMaxZapatosEnColaReparacion: number = 0;
+  private cantMaxClientesEnCola: number = 0;
   private tiempoPromedioAtencion: number = 0;
   private porcentajeClientesRechazados: number = 0;
 
@@ -100,6 +101,7 @@ export class Simulador {
     let acumuladorTiempoReparacion: number = 0;
     let cantZapatosReparados: number = 0;
     let cantMaxZapatosEnColaReparacion: number = 0;
+    let cantMaxClientesEnCola: number = 0;
     let acumuladorTiempoAtencion: number = 0;
     let cantClientesAtendidos: number = 0;
     let cantClientesRechazados: number = 0;
@@ -400,6 +402,8 @@ export class Simulador {
       // Comparamos la cantidad de zapatos en la cola de la iteración actual con la cantidad máxima.
       cantMaxZapatosEnColaReparacion = Math.max(colaZapatosAReparar.length, cantMaxZapatosEnColaReparacion);
 
+      cantMaxClientesEnCola = Math.max(colaClientes.length, cantMaxClientesEnCola);
+
       // Cargamos la matriz de estado a mostrar solo para el rango pasado por parámetro.
       if ((i >= eventoDesde && i <= indiceHasta) || i == cantEventos-1) {
         evento.push(
@@ -435,7 +439,8 @@ export class Simulador {
           cantMaxZapatosEnColaReparacion.toString(),
           acumuladorTiempoAtencion.toFixed(2),
           cantClientesAtendidos.toString(),
-          cantClientesRechazados.toString()
+          cantClientesRechazados.toString(),
+          cantMaxClientesEnCola.toString()
         );
 
         for (let i: number = 0; i < clientesEnSistema.length; i++) {
@@ -474,6 +479,7 @@ export class Simulador {
           this.tiempoPromedioReparacion = acumuladorTiempoReparacion / cantZapatosReparados;
 
           this.cantMaxZapatosEnColaReparacion = cantMaxZapatosEnColaReparacion;
+          this.cantMaxClientesEnCola = cantMaxClientesEnCola;
 
           if (cantClientesAtendidos != 0)
           this.tiempoPromedioAtencion = acumuladorTiempoAtencion / cantClientesAtendidos;
@@ -498,23 +504,27 @@ export class Simulador {
 
   public getMatrizEstado(): string[][] {
     return this.matrizEstado;
-}
+  }
 
-public getTiempoPromedioReparacion(): number {
-  return this.tiempoPromedioReparacion;
-}
+  public getTiempoPromedioReparacion(): number {
+    return this.tiempoPromedioReparacion;
+  }
 
-public getCantMaxZapatosEnColaReparacion(): number {
-  return this.cantMaxZapatosEnColaReparacion;
-}
+  public getCantMaxZapatosEnColaReparacion(): number {
+    return this.cantMaxZapatosEnColaReparacion;
+  }
 
-public getTiempoPromedioAtencion(): number {
-  return this.tiempoPromedioAtencion;
-}
+  public getCantMaxClientesEnCola(): number {
+    return this.cantMaxClientesEnCola;
+  }
 
-public getPorcentajeClientesRechazados(): number {
-  return this.porcentajeClientesRechazados;
-}
+  public getTiempoPromedioAtencion(): number {
+    return this.tiempoPromedioAtencion;
+  }
+
+  public getPorcentajeClientesRechazados(): number {
+    return this.porcentajeClientesRechazados;
+  }
   
   // Método que devuelve el evento que sigue, dados los tiempos de los eventos candidatos.
   public getSiguienteEvento(tiemposEventos: number[]): TipoEvento {

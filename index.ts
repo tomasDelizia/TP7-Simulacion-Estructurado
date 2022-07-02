@@ -22,6 +22,8 @@ const alertTiempoPromedioReparacion: HTMLDivElement = document.getElementById('a
 const alertCantMaxColaZapatos: HTMLDivElement = document.getElementById('alertCantMaxColaZapatos') as HTMLDivElement;
 const alertTiempoPromedioAtencionClientes: HTMLDivElement = document.getElementById('alertTiempoPromedioAtencionClientes') as HTMLDivElement;
 const alertPorcentajeClientesRechazados: HTMLDivElement = document.getElementById('alertPorcentajeClientesRechazados') as HTMLDivElement;
+const alertCantMaxColaClientes: HTMLDivElement = document.getElementById('alertCantMaxColaClientes') as HTMLDivElement;
+
 
 // Definición de la secciones.
 const divTablaSimulacion: HTMLDivElement = document.getElementById('divTablaSimulacion') as HTMLDivElement;
@@ -105,6 +107,7 @@ const simular = () => {
   alertCantMaxColaZapatos.innerHTML = 'Cantidad Máxima de Par de Zapatos a Reparar en la Cola: ';
   alertTiempoPromedioAtencionClientes.innerHTML = 'Tiempo Promedio de Atención de Clientes: ';
   alertPorcentajeClientesRechazados.innerHTML = 'Porcentaje de Clientes Rechazados: ';
+  alertCantMaxColaClientes.innerHTML = 'Cantidad Máxima de Clientes en la Cola: ';
 
   var startTime = performance.now();
   HTMLUtils.limpiarTablaSimulacion(tablaSimulacion, cantEncabezadosTablaSimulacion, cantSubEncabezadosTablaSimulacion);
@@ -135,6 +138,7 @@ const simular = () => {
   alertCantMaxColaZapatos.innerHTML += simulador.getCantMaxZapatosEnColaReparacion() + ' zapatos';
   alertTiempoPromedioAtencionClientes.innerHTML += simulador.getTiempoPromedioAtencion().toFixed(2) + ' minutos';
   alertPorcentajeClientesRechazados.innerHTML += simulador.getPorcentajeClientesRechazados().toFixed(2) + '%';
+  alertCantMaxColaClientes.innerHTML += simulador.getCantMaxClientesEnCola() + ' clientes';
 
   console.log(`La renderización tardó ${performance.now() - startTime} milisegundos`);
   HTMLUtils.mostrarSeccion(divTablaSimulacion);
