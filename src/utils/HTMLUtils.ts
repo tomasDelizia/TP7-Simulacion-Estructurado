@@ -26,37 +26,59 @@ export module HTMLUtils {
   }
 
   // Crea una fila a una tabla html a partir de un vector pasado por parámetro.
-  export function crearFilaTablaSimulacion(fila: string[], indicesColor: number[]): string {
+  export function crearFilaTablaSimulacion(evento: string[], clientesEvento: string[], zapatosEvento: string[], cantClientes: number, cantZapatos: number, indicesColor: number[]): string {
     // Obtenemos el índice de la celda a pintar.
     let eventos: number[] = [];
-    for (let i: number = 0; i < indicesColor.length; i++) eventos.push(Number(fila[indicesColor[i]]));
+    for (let i: number = 0; i < indicesColor.length; i++) eventos.push(Number(evento[indicesColor[i]]));
     let eventoMenor: number = Utils.getMenorMayorACero(eventos);
     let indiceEventoMenor: number;
     for (let i: number = 0; i < indicesColor.length; i++) {
-      if (Number(fila[indicesColor[i]]) === eventoMenor) indiceEventoMenor = indicesColor[i];
+      if (Number(evento[indicesColor[i]]) === eventoMenor) indiceEventoMenor = indicesColor[i];
     }
 
     // Creamos la fila.
     let filaHTML: string = "<tr>";
-    for (let i: number = 0; i < fila.length; i++) {
-      let celdaHTML: string = "<td";
-      // Pintamos la celda si corresponde.
-      if (i == indiceEventoMenor) celdaHTML += ' style="color: red"';
-      celdaHTML += ">";
-      const valorCelda: string = !(typeof fila[i] === 'undefined' || fila[i] == 'null' || Number(fila[i]) === -1 || fila[i] === '') ? fila[i] : '-';
-      celdaHTML += valorCelda + "</td>";
+    // Iteramos el evento.
+    for (let i: number = 0; i < evento.length; i++) {
+      let celdaHTML: string;
+      if (i === indiceEventoMenor) celdaHTML = crearCeldaHTML(evento[i], true);
+      else celdaHTML = crearCeldaHTML(evento[i], false);
+      filaHTML += celdaHTML;
+    }
+    // Iteramos los clientes del evento.
+    for (let i: number = 0; i < cantClientes * 3; i++) {
+      let celdaHTML: string;
+      if (i < clientesEvento.length) celdaHTML = crearCeldaHTML(clientesEvento[i], false);
+      else celdaHTML = "<td>-</td>";
+      filaHTML += celdaHTML;
+    }
+    // Iteramos los pares de zapatos del evento.
+    for (let i: number = 0; i < cantZapatos * 3; i++) {
+      let celdaHTML: string;
+      if (i < zapatosEvento.length) celdaHTML = crearCeldaHTML(zapatosEvento[i], false);
+      else celdaHTML = "<td>-</td>";
       filaHTML += celdaHTML;
     }
     filaHTML += "</tr>"
     return filaHTML;
   }
 
+  function crearCeldaHTML(valorCelda: string, correspondeColor: boolean): string {
+    let celdaHTML: string = "<td";
+    // Pintamos la celda si corresponde.
+    if (correspondeColor) celdaHTML += ' style="color: red"';
+    celdaHTML += ">";
+    let celda: string = !(typeof valorCelda === 'undefined' || valorCelda == 'null' || Number(valorCelda) === -1 || valorCelda === '') ? valorCelda : '-';
+    celdaHTML += celda + "</td>";
+    return celdaHTML;
+  }
+
   // Carga de tabla html.
-  export function llenarTablaSimulacion(matriz: string[][], indicesColor: number[], tabla: HTMLTableElement): void {
+  export function llenarTablaSimulacion(matrizEventos: string[][], matrizClientes: string[][], matrizZapatos: string[][], cantClientes: number, cantZapatos: number, indicesColor: number[], tabla: HTMLTableElement): void {
     tabla.hidden = true;
     let bodyTabla: string = "";
-    for (let i: number = 0; i < matriz.length; i++) {
-      let filaHTML: string = crearFilaTablaSimulacion(matriz[i], indicesColor);
+    for (let i: number = 0; i < matrizEventos.length; i++) {
+      let filaHTML: string = crearFilaTablaSimulacion(matrizEventos[i], matrizClientes[i], matrizZapatos[i], cantClientes, cantZapatos, indicesColor);
       bodyTabla += filaHTML;
     }
     tabla.tBodies[0].innerHTML = bodyTabla;

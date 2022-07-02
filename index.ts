@@ -44,6 +44,8 @@ const btnRK: HTMLButtonElement = document.getElementById('btnRK') as HTMLButtonE
 // Definición de los objetos que realizan la simulación de colas.
 let simulador: Simulador;
 let matrizEstado: string[][];
+let matrizClientes: string[][];
+let matrizZapatos: string[][];
 let rungeKutta: RungeKutta = new RungeKutta();
 
 // Definición de los parámetros.
@@ -124,14 +126,16 @@ const simular = () => {
   console.log(`La simulación tardó ${performance.now() - startTime} milisegundos`);
 
   matrizEstado = simulador.getMatrizEstado();
-  // let cantMaxClientes: number = simulador.getCantMaxClientes();
+  matrizClientes = simulador.getMatrizClientes();
+  matrizZapatos = simulador.getMatrizZapatos();
+  let cantMaxClientes: number = simulador.getCantMaxClientes();
   let cantMaxParZapatos: number = simulador.getCantMaxParZapatos();
 
   // Cargamos la tabla a mostrar.
   startTime = performance.now();
-  HTMLUtils.agregarEncabezados(15, tablaSimulacion, columnasClientes, 'Cliente');
+  HTMLUtils.agregarEncabezados(cantMaxClientes, tablaSimulacion, columnasClientes, 'Cliente');
   HTMLUtils.agregarEncabezados(cantMaxParZapatos, tablaSimulacion, columnasParZapatos, 'Par Zapatos');
-  HTMLUtils.llenarTablaSimulacion(matrizEstado, indicesEventosCandidatos, tablaSimulacion);
+  HTMLUtils.llenarTablaSimulacion(matrizEstado, matrizClientes, matrizZapatos, cantMaxClientes, cantMaxParZapatos, indicesEventosCandidatos, tablaSimulacion);
 
   // Cargamos métricas.
   alertTiempoPromedioReparacion.innerHTML += simulador.getTiempoPromedioReparacion().toFixed(2) + ' minutos';

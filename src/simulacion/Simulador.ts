@@ -16,14 +16,14 @@ export class Simulador {
   private tiempoReparacionZapatosB: number;
   private tiempoSecado: number;
 
-  private matrizEstado: string[][];
+  private matrizEventos: string[][];
+  private matrizClientes: string[][];
+  private matrizZapatos: string[][];
 
   private cantMaxClientes: number;
   private cantMaxParZapatos: number;
   
   private probObjetivosVisita: number[];
-
-  private limiteColumnasCliente: number = 15;
 
   private tiempoPromedioReparacion: number = 0;
   private cantMaxZapatosEnColaReparacion: number = 0;
@@ -50,7 +50,9 @@ export class Simulador {
     this.tiempoReparacionZapatosB = tiempoReparacionZapatosB;
     this.tiempoSecado = tiempoSecado;
     this.probObjetivosVisita = [probRetiro, probPedido];
-    this.matrizEstado = [];
+    this.matrizEventos = [];
+    this.matrizClientes = [];
+    this.matrizZapatos = [];
     this.cantMaxClientes = 0;
     this.cantMaxParZapatos = 0;
 
@@ -61,6 +63,8 @@ export class Simulador {
 
     // Vector de estado de la iteración actual.
     let evento: string[] = [];
+    let clientesEvento: string[] = [];
+    let zapatosEvento: string[] = [];
 
     let tipoEvento: TipoEvento;
     let reloj: number = 0;
@@ -110,6 +114,8 @@ export class Simulador {
 
     for (let i: number = 0; i < cantEventos; i++) {
       evento = [];
+      clientesEvento = [];
+      zapatosEvento = [];
       // El evento es el inicio de la simulación.
       if (i == 0) tipoEvento = TipoEvento.INICIO_SIMULACION;
       // El evento es el fin de la simulación.
@@ -444,33 +450,29 @@ export class Simulador {
         );
 
         for (let i: number = 0; i < clientesEnSistema.length; i++) {
-          evento.push(
+          clientesEvento.push(
             clientesEnSistema[i].getId().toString(),
             EstadoCliente[clientesEnSistema[i].getEstado()],
             clientesEnSistema[i].getMinutoLlegada().toFixed(2),
           );
         }
 
-        // Evitamos que los zapatos queden bajo los encabezados de las columnas de clientes.
-        if (clientesEnSistema.length < this.limiteColumnasCliente) {
-          let celdasVacias: number = (this.limiteColumnasCliente - clientesEnSistema.length) * 3;
-          for (let i: number = 0; i < celdasVacias; i++) evento.push('-');
-        }
-
         for (let i: number = 0; i < parZapatosEnSistema.length; i++) {
-          evento.push(
+          zapatosEvento.push(
             parZapatosEnSistema[i].getId().toString(),
             EstadoParZapatos[parZapatosEnSistema[i].getEstado()],
             parZapatosEnSistema[i].getMinutoLlegada().toFixed(2),
           );
         }
 
-        this.matrizEstado.push(evento);
+        this.matrizEventos.push(evento);
+        this.matrizClientes.push(clientesEvento);
+        this.matrizZapatos.push(zapatosEvento);
 
-        // Actualizamos la cantidad máxima de pasajeros que hubo en el sistema.
+        // Actualizamos la cantidad máxima de pasajeros que hubo en el sistema para las filas a mostrar.
         this.cantMaxClientes = Math.max(clientesEnSistema.length, this.cantMaxClientes);
 
-        // Actualizamos la cantidad máxima de pares de zapatos que hubo en el sistema.
+        // Actualizamos la cantidad máxima de pares de zapatos que hubo en el sistema para las filas a mostrar.
         this.cantMaxParZapatos = Math.max(parZapatosEnSistema.length, this.cantMaxParZapatos);
 
         // Calculamos las métricas para la última iteración.
@@ -503,7 +505,15 @@ export class Simulador {
   }
 
   public getMatrizEstado(): string[][] {
-    return this.matrizEstado;
+    return this.matrizEventos;
+  }
+
+  public getMatrizClientes(): string[][] {
+    return this.matrizClientes;
+  }
+
+  public getMatrizZapatos(): string[][] {
+    return this.matrizZapatos;
   }
 
   public getTiempoPromedioReparacion(): number {
