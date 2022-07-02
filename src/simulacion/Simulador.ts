@@ -112,10 +112,8 @@ export class Simulador {
       if (i == 0) tipoEvento = TipoEvento.INICIO_SIMULACION;
       // El evento es el fin de la simulación.
       else if (i == cantEventos - 1) tipoEvento = TipoEvento.FIN_SIMULACION;
-      // El evento es un fin de recepción de pedidos: todos los días a las 16hs.
-      else if (reloj >= 480 && zapatero.estaRecibiendoPedidos()) tipoEvento = TipoEvento.FIN_RECEPCION_PEDIDOS;
       // El evento es un inicio de jornada: no se reciben pedidos y ya no hay zapatos para reparar, así que comienza un nuevo día a las 8hs.
-      else if (!zapatero.estaRecibiendoPedidos() && zapatero.estaLibre()) tipoEvento = TipoEvento.INICIO_JORNADA;
+      else if (!zapatero.estaRecibiendoPedidos() && zapatero.estaLibre() && colaZapatosListos.length === 0) tipoEvento = TipoEvento.INICIO_JORNADA;
       else {
         let eventosCandidatos: number[] = [
           proximaLlegada,
@@ -125,6 +123,8 @@ export class Simulador {
         reloj = Utils.getMenorMayorACero(eventosCandidatos);
         tipoEvento = this.getSiguienteEvento(eventosCandidatos);
       }
+      // El evento es un fin de recepción de pedidos: todos los días a las 16hs.
+      if (reloj >= 480 && zapatero.estaRecibiendoPedidos()) tipoEvento = TipoEvento.FIN_RECEPCION_PEDIDOS;
 
       switch (tipoEvento) {
         // Inicio de la simulación.
@@ -168,31 +168,23 @@ export class Simulador {
             case "Retiro": {
               // Preguntamos si el zapatero está libre o reparando.
               if (zapatero.estaParaAtender()) {
-                // Preguntamos si hay zapatos listos para retirar.
-                if (colaZapatosListos.length > 0) {
-                  // Si estaba reparando, deja la reparación pendiente y atiende al cliente.
-                  if (zapatero.estaReparando()) {
-                    // Cálculo del tiempo remanente de reparación.
-                    tiempoRemanenteReparacion = finReparacion - reloj;
-                    finReparacion = -1;
+                // Si estaba reparando, deja la reparación pendiente y atiende al cliente.
+                if (zapatero.estaReparando()) {
+                  // Cálculo del tiempo remanente de reparación.
+                  tiempoRemanenteReparacion = finReparacion - reloj;
+                  finReparacion = -1;
 
-                    // Buscamos el par de zapatos que estaba siendo reparado, y actualizamos su estado.
-                    let parZapatosAPausar: ParZapatos = parZapatosEnSistema.find(parZapatos => parZapatos.estaEnReparacion());
-                    parZapatosAPausar.pausarReparacion();
-                  }
-                  cliente.retirandoZapatos();
-                  zapatero.atendiendo();
+                  // Buscamos el par de zapatos que estaba siendo reparado, y actualizamos su estado.
+                  let parZapatosAPausar: ParZapatos = parZapatosEnSistema.find(parZapatos => parZapatos.estaEnReparacion());
+                  parZapatosAPausar.pausarReparacion();
+                }
+                cliente.retirandoZapatos();
+                zapatero.atendiendo();
       
-                  // Generamos el tiempo de atención.
-                  rndAtencion = Math.random();
-                  tiempoAtencion = this.getTiempoAtencion(rndAtencion);
-                  finAtencion = reloj + tiempoAtencion;
-                }
-                // No hay zapatos listos para retirar, se va.
-                else {
-                  cantClientesRechazados++;
-                  clientesEnSistema.pop();
-                }
+                // Generamos el tiempo de atención.
+                rndAtencion = Math.random();
+                tiempoAtencion = this.getTiempoAtencion(rndAtencion);
+                finAtencion = reloj + tiempoAtencion;
               }
               // Si estaba atendiendo otro cliente, va a la cola.
               else {
@@ -255,10 +247,18 @@ export class Simulador {
           switch (clienteAtendido.getEstado()) {
             // El cliente siendo atendido estaba retirando un par de zapatos.
             case (EstadoCliente.RETIRANDO_ZAPATOS): {
-              // Quitamos un par de zapatos listos de la cola y del sistema.
-              let parZapatosARetirar: ParZapatos = colaZapatosListos.shift();
-              let indiceZapatos: number = parZapatosEnSistema.findIndex(parZapatos => parZapatos === parZapatosARetirar);
-              parZapatosEnSistema.splice(indiceZapatos, 1);
+              // Preguntamos si había zapatos listos para retirar.
+              if (colaZapatosListos.length > 0) {
+                // Quitamos un par de zapatos listos de la cola y del sistema.
+                let parZapatosARetirar: ParZapatos = colaZapatosListos.shift();
+                let indiceZapatos: number = parZapatosEnSistema.findIndex(parZapatos => parZapatos === parZapatosARetirar);
+                parZapatosEnSistema.splice(indiceZapatos, 1);
+              }
+              // No había zapatos listos, se rechaza el cliente.
+              else {
+                cantClientesAtendidos--;
+                cantClientesRechazados++;
+              }
               break;
             }
             // El cliente siendo atendido estaba haciendo un pedido de reparación.
@@ -311,59 +311,22 @@ export class Simulador {
             switch (clientePorAtender.getEstado()) {
               // El cliente estaba esperando retirar un par de zapatos.
               case (EstadoCliente.ESPERANDO_RETIRO): {
-                // Preguntamos si hay zapatos listos para retirar.
-                if (colaZapatosListos.length > 0) {
-                  clientePorAtender.retirandoZapatos();
+                clientePorAtender.retirandoZapatos();
       
-                  // Generamos el tiempo de atención.
-                  rndAtencion = Math.random();
-                  tiempoAtencion = this.getTiempoAtencion(rndAtencion);
-                  finAtencion = reloj + tiempoAtencion;
-                }
-                // No hay zapatos listos para retirar, se va.
-                else {
-                  //cantClientesRechazados++;
-                  //let indiceClienteAEliminar: number = clientesEnSistema.findIndex(cliente => cliente === clientePorAtender);
-                  //clientesEnSistema.splice(indiceClienteAEliminar, 1);
-
-                  // Mientras haya clientes que estén esperando retirar zapatos y no haya zapatos listos, los quitamos del sistema.
-                  while (colaClientes.length > 0 && clientePorAtender.estaEsperandoRetirarPedido()) {
-                    cantClientesRechazados++;
-                    let indiceClienteAEliminar: number = clientesEnSistema.findIndex(cliente => cliente === clientePorAtender);
-                    clientesEnSistema.splice(indiceClienteAEliminar, 1);
-                    clientePorAtender = colaClientes.shift();
-
-                    // Se quita un cliente que estaba esperando hacer un pedido.
-                    if (clientePorAtender.estaEsperandoHacerPedido()) {
-                      clientePorAtender.haciendoPedido();
-  
-                      // Generamos el tiempo de atención.
-                      rndAtencion = Math.random();
-                      tiempoAtencion = this.getTiempoAtencion(rndAtencion);
-                      finAtencion = reloj + tiempoAtencion;
-                      break;
-                    }
-                  }
-                }
+                // Generamos el tiempo de atención.
+                rndAtencion = Math.random();
+                tiempoAtencion = this.getTiempoAtencion(rndAtencion);
+                finAtencion = reloj + tiempoAtencion;
                 break;
               }
               // El cliente estaba esperando hacer un pedido de zapatos.
               case (EstadoCliente.ESPERANDO_HACER_PEDIDO): {
-                // Preguntamos si el zapatero está recibiendo pedidos.
-                if (zapatero.estaRecibiendoPedidos()) {
-                  clientePorAtender.haciendoPedido();
+                clientePorAtender.haciendoPedido();
   
-                  // Generamos el tiempo de atención.
-                  rndAtencion = Math.random();
-                  tiempoAtencion = this.getTiempoAtencion(rndAtencion);
-                  finAtencion = reloj + tiempoAtencion;
-                }
-                // No está recibiendo pedidos, se va del sistema.
-                else {
-                  cantClientesRechazados++;
-                  let indiceClienteAEliminar: number = clientesEnSistema.findIndex(cliente => cliente === clientePorAtender);
-                  clientesEnSistema.splice(indiceClienteAEliminar, 1);
-                }
+                // Generamos el tiempo de atención.
+                rndAtencion = Math.random();
+                tiempoAtencion = this.getTiempoAtencion(rndAtencion);
+                finAtencion = reloj + tiempoAtencion;
                 break;
               }
             }
@@ -405,6 +368,7 @@ export class Simulador {
 
         // Fin de recepción pedidos.
         case TipoEvento.FIN_RECEPCION_PEDIDOS: {
+          reloj = 480;
           zapatero.detenerRecepcionPedidos();
           break;
         }
